@@ -48,9 +48,9 @@ set(HEADERS
     ${FREERTOS_INC}/deprecated_definitions.h
     ${FREERTOS_INC}/event_groups.h
     ${FREERTOS_INC}/FreeRTOS.h
+    ${FREERTOS_INC}/portable.h
     ${FREERTOS_INC}/list.h
     ${FREERTOS_INC}/mpu_wrappers.h
-    ${FREERTOS_INC}/portable.h
     ${FREERTOS_INC}/projdefs.h
     ${FREERTOS_INC}/queue.h
     ${FREERTOS_INC}/semphr.h

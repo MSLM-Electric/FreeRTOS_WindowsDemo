@@ -172,7 +172,7 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 /* Determine whether we are in thread mode or handler mode. */
 static int inHandlerMode (void)
 {
-  return __get_IPSR() != 0;
+    return 1;//?! __get_IPSR() != 0;
 }
 
 /*********************** Kernel Control Functions *****************************/
