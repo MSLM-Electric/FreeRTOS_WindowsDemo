@@ -1,0 +1,81 @@
+cmake_minimum_required(VERSION 3.12)
+project(FindingBugWithBitLoggerList)
+set(PROJ_NAME FindingBugWithBitLoggerList)
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED True)
+
+set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
+message("Start building project...")
+
+set(FREERTOS_SRCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/FreeRTOS_Source")
+set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/../../../")
+
+include(${FREERTOS_EXPERIMENTS}/Configs.cmake)
+
+set(FREERTOS_INC "${FREERTOS_SRCS}/include")
+set(FREERTOS_PORTABLE "${FREERTOS_SRCS}/portable")
+set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/Supporting_Functions")
+set(EXTERNAL_LIBS "${ROOT_PATH}/../../../ExternalLibs")
+set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
+set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
+set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
+
+
+#include(Configs.cmake)
+
+set(SOURCES
+    ${FREERTOS_SRCS}/event_groups.c
+    ${FREERTOS_SRCS}/list.c
+    ${FREERTOS_SRCS}/queue.c
+    ${FREERTOS_SRCS}/tasks.c
+    ${FREERTOS_SRCS}/timers.c
+
+    ${FREERTOS_PORTABLE}/MemMang/heap_4.c
+    ${FREERTOS_PORTABLE}/MSVC-MingW/port.c
+
+    ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.c
+
+    ${BITLOGGER}/BitLogger.c
+    ${CMSIS_OS}/cmsis_os.c
+    ${SIMPLETIMER}/SimpleTimerWP.c
+
+    ${ROOT_PATH}/main.c
+)
+
+set(HEADERS
+    ${FREERTOS_INC}/croutine.h
+    ${FREERTOS_INC}/deprecated_definitions.h
+    ${FREERTOS_INC}/event_groups.h
+    ${FREERTOS_INC}/FreeRTOS.h
+    ${FREERTOS_INC}/list.h
+    ${FREERTOS_INC}/mpu_wrappers.h
+    ${FREERTOS_INC}/portable.h
+    ${FREERTOS_INC}/projdefs.h
+    ${FREERTOS_INC}/queue.h
+    ${FREERTOS_INC}/semphr.h
+    ${FREERTOS_INC}/StackMacros.h
+    ${FREERTOS_INC}/task.h
+    ${FREERTOS_INC}/timers.h
+
+    ${FREERTOS_PORTABLE}/MSVC-MingW/portmacro.h
+
+    ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.h
+
+    ${FREERTOS_EXPERIMENTS}/FreeRTOSConfig.h
+
+    ${EXTERNAL_LIBS}/type_def.h
+    ${BITLOGGER}/BitLogger.h
+    ${CMSIS_OS}/cmsis_os.h
+    ${SIMPLETIMER}/SimpleTimerWP.h
+)
+
+add_executable(${PROJ_NAME} ${SOURCES} ${HEADERS})
+
+if(${CMAKE_VERSION} VERSION_LESS "2.8.12")
+    include_directories(FindingBugWithBitLoggerList PUBLIC ${INCLUDE_DIR})
+else()
+    target_include_directories(${PROJ_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/include)
+endif()
+
+target_link_options(${PROJ_NAME} PRIVATE "/MAP:${PROJECT_SOURCE_DIR}/outputMasterProject.map")
