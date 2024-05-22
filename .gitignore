@@ -6,7 +6,7 @@
 build
 Debug
 TempRsrv
-ExamplesAndExperiments/TaskExecuteLogger
+ExamplesNExperiments/TaskExecuteLogger
 !*.c
 !*.h
 !*.json

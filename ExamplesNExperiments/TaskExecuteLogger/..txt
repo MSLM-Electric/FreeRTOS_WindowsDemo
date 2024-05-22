@@ -1,2 +1,0 @@
-Does FreeRTOS have callback handler for every created task runners!?
-It's for knowing which task runing now, and for tracing.
