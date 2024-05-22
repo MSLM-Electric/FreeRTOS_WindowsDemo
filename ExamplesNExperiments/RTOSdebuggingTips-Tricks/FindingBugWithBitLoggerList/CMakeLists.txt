@@ -20,7 +20,7 @@ set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/Supportin
 set(EXTERNAL_LIBS "${ROOT_PATH}/../../../ExternalLibs")
 set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
 set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
-#set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current projects
+#set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
 if(CMSIS_OS_ENABLE_FLAG)
     set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
 endif()
@@ -35,13 +35,10 @@ set(SOURCES
 
     ${FREERTOS_PORTABLE}/MemMang/heap_4.c
     ${FREERTOS_PORTABLE}/MSVC-MingW/port.c
-
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.c
 
     ${BITLOGGER}/BitLogger.c
-    ##${CMSIS_OS}/cmsis_os.c
     ${SIMPLETIMER}/SimpleTimerWP.c
-
     ${ROOT_PATH}/main.c
 )
 
@@ -61,14 +58,11 @@ set(HEADERS
     ${FREERTOS_INC}/timers.h
 
     ${FREERTOS_PORTABLE}/MSVC-MingW/portmacro.h
-
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.h
-
     ${FREERTOS_EXPERIMENTS}/FreeRTOSConfig.h
 
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h
-    ##${CMSIS_OS}/cmsis_os.h
     ${SIMPLETIMER}/SimpleTimerWP.h
 )
 
@@ -76,16 +70,10 @@ add_executable(${PROJ_NAME} ${SOURCES} ${HEADERS})
 
 if(CMSIS_OS_ENABLE_FLAG)
     set(CMSIS_OS_SRCHDR ${CMSIS_OS}/cmsis_os.c ${CMSIS_OS}/cmsis_os.h) 
-    #set(CMSIS_OS_HDR ${CMSIS_OS}/cmsis_os.h)
-
     add_library(cmsis_os_library STATIC ${CMSIS_OS_SRCHDR})
     set_target_properties(cmsis_os_library PROPERTIES
          LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     target_link_libraries(${PROJ_NAME} cmsis_os_library)
-    #add_library(libraryhdr STATIC ${CMSIS_OS_HDR})
-    #set_target_properties(libraryhdr PROPERTIES
-    #     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-    #target_link_libraries(${PROJ_NAME} libraryhdr)
 endif()
 
 if(${CMAKE_VERSION} VERSION_LESS "2.8.12")
