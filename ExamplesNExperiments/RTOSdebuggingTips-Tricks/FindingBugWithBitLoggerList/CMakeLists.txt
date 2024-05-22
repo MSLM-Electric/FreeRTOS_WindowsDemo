@@ -77,9 +77,9 @@ if(CMSIS_OS_ENABLE_FLAG)
 endif()
 
 if(${CMAKE_VERSION} VERSION_LESS "2.8.12")
-    include_directories(FindingBugWithBitLoggerList PUBLIC ${INCLUDE_DIR})
+    include_directories(${PROJ_NAME} PUBLIC ${INCLUDE_DIR})
 else()
     target_include_directories(${PROJ_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/include)
 endif()
 
-target_link_options(${PROJ_NAME} PRIVATE "/MAP:${PROJECT_SOURCE_DIR}/outputMasterProject.map")
+target_link_options(${PROJ_NAME} PRIVATE "/MAP:${PROJECT_SOURCE_DIR}/outputProject.map")

@@ -7,6 +7,7 @@ build
 Debug
 TempRsrv
 ExamplesNExperiments/TaskExecuteLogger
+ExamplesNExperiments/packet_improvement_test
 !*.c
 !*.h
 !*.json
