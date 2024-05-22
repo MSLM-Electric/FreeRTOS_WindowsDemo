@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.0.2)
 project(FindingBugWithBitLoggerList)
 set(PROJ_NAME FindingBugWithBitLoggerList)
 set(CMAKE_C_STANDARD 99)
@@ -12,6 +12,7 @@ set(FREERTOS_SRCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/FreeRTOS_Source")
 set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/../../../")
 
 include(${FREERTOS_EXPERIMENTS}/Configs.cmake)
+message(STATUS ".cmake path: " ${MAIN_PROJECT_AND_CONFIGS_PATH})
 
 set(FREERTOS_INC "${FREERTOS_SRCS}/include")
 set(FREERTOS_PORTABLE "${FREERTOS_SRCS}/portable")
@@ -19,10 +20,11 @@ set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/Supportin
 set(EXTERNAL_LIBS "${ROOT_PATH}/../../../ExternalLibs")
 set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
 set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
-set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
+#set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current projects
+if(CMSIS_OS_ENABLE_FLAG)
+    set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
+endif()
 
-
-#include(Configs.cmake)
 
 set(SOURCES
     ${FREERTOS_SRCS}/event_groups.c
@@ -37,7 +39,7 @@ set(SOURCES
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.c
 
     ${BITLOGGER}/BitLogger.c
-    ${CMSIS_OS}/cmsis_os.c
+    ##${CMSIS_OS}/cmsis_os.c
     ${SIMPLETIMER}/SimpleTimerWP.c
 
     ${ROOT_PATH}/main.c
@@ -66,11 +68,25 @@ set(HEADERS
 
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h
-    ${CMSIS_OS}/cmsis_os.h
+    ##${CMSIS_OS}/cmsis_os.h
     ${SIMPLETIMER}/SimpleTimerWP.h
 )
 
 add_executable(${PROJ_NAME} ${SOURCES} ${HEADERS})
+
+if(CMSIS_OS_ENABLE_FLAG)
+    set(CMSIS_OS_SRCHDR ${CMSIS_OS}/cmsis_os.c ${CMSIS_OS}/cmsis_os.h) 
+    #set(CMSIS_OS_HDR ${CMSIS_OS}/cmsis_os.h)
+
+    add_library(cmsis_os_library STATIC ${CMSIS_OS_SRCHDR})
+    set_target_properties(cmsis_os_library PROPERTIES
+         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    target_link_libraries(${PROJ_NAME} cmsis_os_library)
+    #add_library(libraryhdr STATIC ${CMSIS_OS_HDR})
+    #set_target_properties(libraryhdr PROPERTIES
+    #     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+    #target_link_libraries(${PROJ_NAME} libraryhdr)
+endif()
 
 if(${CMAKE_VERSION} VERSION_LESS "2.8.12")
     include_directories(FindingBugWithBitLoggerList PUBLIC ${INCLUDE_DIR})

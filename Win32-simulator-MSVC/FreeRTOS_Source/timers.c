@@ -919,7 +919,7 @@ Timer_t * const pxTimer = ( Timer_t * ) xTimer;
 
 #endif /* INCLUDE_xTimerPendFunctionCall */
 /*-----------------------------------------------------------*/
-
+#ifdef CMSIS_OS_ENABLE
 /* This entire source file will be skipped if the application is not configured
 to include software timer functionality.  If you want to include software timer
 functionality then ensure configUSE_TIMERS is set to 1 in FreeRTOSConfig.h. */
@@ -932,6 +932,7 @@ functionality then ensure configUSE_TIMERS is set to 1 in FreeRTOSConfig.h. */
 		xReturn = listGET_LIST_ITEM_VALUE(&(pxTimer->xTimerListItem));
 		return xReturn;
 	}
+#endif //!CMSIS_OS_ENABLE
 #endif /* configUSE_TIMERS == 1 */
 
 

@@ -1883,7 +1883,13 @@ uint32_t osSemaphoreGetCount(osSemaphoreId semaphore_id)
 *
 */
 void task_enter_critical(void){
-    if (critical_nesting_count() != 9999UL/*0xaaaaaaaa*/){
+    if (critical_nesting_count() != 
+#ifdef DEBUG_ON_VS
+        9999UL
+#else
+        0xaaaaaaaa
+#endif // !DEBUG_ON_VS
+    ) {
         taskENTER_CRITICAL();
     }
 }
@@ -1893,7 +1899,13 @@ void task_enter_critical(void){
 *
 */
 void task_exit_critical(void){
-    if (critical_nesting_count() != 9999UL/*0xaaaaaaaa*/){
+    if (critical_nesting_count() != 
+#ifdef DEBUG_ON_VS
+        9999UL
+#else
+        0xaaaaaaaa
+#endif // !DEBUG_ON_VS
+        ) {
         taskEXIT_CRITICAL();
     }
 }
@@ -1903,7 +1915,13 @@ void task_exit_critical(void){
 */
 UBaseType_t task_enter_critical_from_isr(void){
     UBaseType_t uxSavedInterruptStatus = 0;
-    if (critical_nesting_count() != 9999UL/*0xaaaaaaaa*/){
+    if (critical_nesting_count() != 
+#ifdef DEBUG_ON_VS
+        9999UL
+#else
+        0xaaaaaaaa
+#endif // !DEBUG_ON_VS
+        ) {
         uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR();
     }
     return uxSavedInterruptStatus;
@@ -1914,7 +1932,13 @@ UBaseType_t task_enter_critical_from_isr(void){
 *
 */
 void task_exit_critical_from_isr(UBaseType_t uxSavedInterruptStatus){
-    if (critical_nesting_count() != 0xaaaaaaaa){
+    if (critical_nesting_count() != 
+#ifdef DEBUG_ON_VS
+        9999UL
+#else
+        0xaaaaaaaa
+#endif // !DEBUG_ON_VS
+        ) {
         taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
     }
 }

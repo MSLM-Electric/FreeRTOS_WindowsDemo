@@ -826,7 +826,9 @@ point support. */
 #ifndef configUSE_TASK_FPU_SUPPORT
 	#define configUSE_TASK_FPU_SUPPORT 1
 #endif
+#ifdef CMSIS_OS_ENABLE
 UBaseType_t critical_nesting_count(void);
+#endif // CMSIS_OS_ENABLE
 #ifdef __cplusplus
 }
 #endif

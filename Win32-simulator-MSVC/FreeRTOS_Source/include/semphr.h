@@ -839,6 +839,7 @@ typedef QueueHandle_t SemaphoreHandle_t;
  */
 #define xSemaphoreGetMutexHolder( xSemaphore ) xQueueGetMutexHolder( ( xSemaphore ) )
 
+#ifdef CMSIS_OS_ENABLE
  /**
   * semphr.h
   * <pre>TaskHandle_t xSemaphoreGetMutexHolderFromISR( SemaphoreHandle_t xMutex );</pre>
@@ -861,7 +862,7 @@ typedef QueueHandle_t SemaphoreHandle_t;
    *
    */
 #define uxSemaphoreGetCount( xSemaphore ) uxQueueMessagesWaiting( ( QueueHandle_t ) ( xSemaphore ) )
-
+#endif // CMSIS_OS_ENABLE
 #endif /* SEMAPHORE_H */
 
 

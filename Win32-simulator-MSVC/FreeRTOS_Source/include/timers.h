@@ -1130,6 +1130,7 @@ BaseType_t xTimerPendFunctionCall( PendedFunction_t xFunctionToPend, void *pvPar
  */
 const char * pcTimerGetTimerName( TimerHandle_t xTimer ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
+#ifdef CMSIS_OS_ENABLE
 /**
 * TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer );
 *
@@ -1144,7 +1145,7 @@ const char * pcTimerGetTimerName( TimerHandle_t xTimer ) PRIVILEGED_FUNCTION; /*
 * value is undefined.
 */
 TickType_t xTimerGetExpiryTime(TimerHandle_t xTimer) PRIVILEGED_FUNCTION;
-
+#endif //CMSIS_OS_ENABLE
 /*
  * Functions beyond this part are not part of the public API and are intended
  * for use by the kernel only.
