@@ -108,7 +108,7 @@ int main( int argc, char **argv  )
 	for (uint8_t u = 0; u < 6; u++) {
 		char taskName[] = "Buggy task N";
 		taskName[/*11*/strlen(taskName) - 1] = 0x30 + u;
-		xTaskCreate(smBuggyTaskWhichNotCatched, taskName, 200, &taskName[strlen(taskName)-1], 1, NULL);
+		xTaskCreate(smBuggyTaskWhichNotCatched, taskName, 100, &taskName[strlen(taskName)-1], 1, NULL);
 	}
 	xTaskCreate(smBuggyTask2WhichSuccesfullyDetected, "Buggy task 2 which detected", 100, NULL, 1, NULL);
 	xTaskCreate(smBuggyTask3WhichSuccesfullyDetected, "Buggy task 3 which detected", 100, NULL, 1, NULL);
@@ -158,7 +158,7 @@ volatile uint32_t ul;
 void smBuggyTaskWhichNotCatched(const void *pvParameters)
 {
 	char* pcTaskName = "Buggy Task N";
-	uint8_t taskID = *(const uint8_t*)pvParameters;
+	uint8_t taskID = *(uint8_t*)pvParameters;
 	pcTaskName[strlen(pcTaskName) - 1] = taskID;
 	const char *additnstr = " running which can't handle running";
 	//const char* taskInfo[40];

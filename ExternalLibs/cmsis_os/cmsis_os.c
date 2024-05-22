@@ -1883,7 +1883,7 @@ uint32_t osSemaphoreGetCount(osSemaphoreId semaphore_id)
 *
 */
 void task_enter_critical(void){
-    if (critical_nesting_count() != 0xaaaaaaaa){
+    if (critical_nesting_count() != 9999UL/*0xaaaaaaaa*/){
         taskENTER_CRITICAL();
     }
 }
@@ -1893,7 +1893,7 @@ void task_enter_critical(void){
 *
 */
 void task_exit_critical(void){
-    if (critical_nesting_count() != 0xaaaaaaaa){
+    if (critical_nesting_count() != 9999UL/*0xaaaaaaaa*/){
         taskEXIT_CRITICAL();
     }
 }
@@ -1903,7 +1903,7 @@ void task_exit_critical(void){
 */
 UBaseType_t task_enter_critical_from_isr(void){
     UBaseType_t uxSavedInterruptStatus = 0;
-    if (critical_nesting_count() != 0xaaaaaaaa){
+    if (critical_nesting_count() != 9999UL/*0xaaaaaaaa*/){
         uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR();
     }
     return uxSavedInterruptStatus;

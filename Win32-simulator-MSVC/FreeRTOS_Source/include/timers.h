@@ -1130,6 +1130,21 @@ BaseType_t xTimerPendFunctionCall( PendedFunction_t xFunctionToPend, void *pvPar
  */
 const char * pcTimerGetTimerName( TimerHandle_t xTimer ) PRIVILEGED_FUNCTION; /*lint !e971 Unqualified char types are allowed for strings and single characters only. */
 
+/**
+* TickType_t xTimerGetExpiryTime( TimerHandle_t xTimer );
+*
+* Returns the time in ticks at which the timer will expire.  If this is less
+* than the current tick count then the expiry time has overflowed from the
+* current time.
+*
+* @param xTimer The handle of the timer being queried.
+*
+* @return If the timer is running then the time in ticks at which the timer
+* will next expire is returned.  If the timer is not running then the return
+* value is undefined.
+*/
+TickType_t xTimerGetExpiryTime(TimerHandle_t xTimer) PRIVILEGED_FUNCTION;
+
 /*
  * Functions beyond this part are not part of the public API and are intended
  * for use by the kernel only.
