@@ -95,7 +95,12 @@ extern "C" {
 #endif
 
 /* Application specific configuration options. */
+#ifdef FREERTOSCONFIG_RELATIVE_PATH
 #include FREERTOSCONFIG_RELATIVE_PATH
+#else
+#include "FreeRTOSConfig.h"
+#endif // FREERTOSCONFIG_RELATIVE_PATH
+
 
 /* Basic FreeRTOS definitions. */
 #include "projdefs.h"
