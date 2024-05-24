@@ -172,7 +172,11 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 /* Determine whether we are in thread mode or handler mode. */
 static int inHandlerMode (void)
 {
-    return 1;//?! __get_IPSR() != 0;
+#ifdef DEBUG_ON_VS
+    return 1;//?! I don't know how to simulate the Thread Mode and Handler Mode of ARM processors
+#else
+    return __get_IPSR() != 0;
+#endif // DEBUG_ON_VS
 }
 
 /*********************** Kernel Control Functions *****************************/

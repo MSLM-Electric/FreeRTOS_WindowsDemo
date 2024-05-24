@@ -71,6 +71,7 @@
 are used by the FreeRTOS Windows port itself, so 3 is the first number available
 to the application. */
 #define mainINTERRUPT_NUMBER	3
+#define timerINTERRUPT_NUMBER   mainINTERRUPT_NUMBER+1
 
 #define ONE_SHOT_TIMER 0
 #define PERIODIC_TIMER 1
@@ -122,7 +123,7 @@ int main( int argc, char **argv  )
 		shown here can only be used with the FreeRTOS Windows port, where such
 		interrupts are only simulated. */
 	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulExampleInterruptHandler);
-	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulTimerInterruptHandler);
+	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerInterruptHandler);
 
 	/* Start the scheduler to start the tasks executing. */
 	vTaskStartScheduler();	
@@ -261,7 +262,8 @@ void HardwareTimerInterruption_Immitate(void* pvParameters)
 {
 	for (;;) {
 		vTaskDelay(1);
-		ulTimerInterruptHandler();
+		vPortGenerateSimulatedInterrupt(mainINTERRUPT_NUMBER);
+		vPortGenerateSimulatedInterrupt(timerINTERRUPT_NUMBER);
 	}
 }
 
