@@ -173,7 +173,7 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 static int inHandlerMode (void)
 {
 #ifdef DEBUG_ON_VS
-    return 1;//?! I don't know how to simulate the Thread Mode and Handler Mode of ARM processors
+    return 0;//?! Enabled only Thread Mode. It means that cmsis_os fucntions have to be used only on inside tasks and not from ISR/IRQ(interrupt handlers). I don't know how to simulate the Thread Mode and Handler Mode of ARM processors
 #else
     return __get_IPSR() != 0;
 #endif // DEBUG_ON_VS
