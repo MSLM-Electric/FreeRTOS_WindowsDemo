@@ -8,16 +8,17 @@ set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 message("Start building project...")
 
-set(FREERTOS_SRCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/FreeRTOS_Source")
-set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/../../../")
+set(BACK_FROM_ROOT "../../..")
+set(FREERTOS_SRCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/FreeRTOS_Source")
+set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/${BACK_FROM_ROOT}/")
 
 include(${FREERTOS_EXPERIMENTS}/Configs.cmake)
 message(STATUS ".cmake path: " ${MAIN_PROJECT_AND_CONFIGS_PATH})
 
 set(FREERTOS_INC "${FREERTOS_SRCS}/include")
 set(FREERTOS_PORTABLE "${FREERTOS_SRCS}/portable")
-set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/../../../Win32-simulator-MSVC/Supporting_Functions")
-set(EXTERNAL_LIBS "${ROOT_PATH}/../../../ExternalLibs")
+set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/Supporting_Functions")
+set(EXTERNAL_LIBS "${ROOT_PATH}/${BACK_FROM_ROOT}/ExternalLibs")
 set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
 set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
 #set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
@@ -59,12 +60,13 @@ set(HEADERS
 
     ${FREERTOS_PORTABLE}/MSVC-MingW/portmacro.h
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.h
-    ${FREERTOS_EXPERIMENTS}/FreeRTOSConfig.h
+    ${ROOT_PATH}/FreeRTOSConfig.h
 
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h
     ${SIMPLETIMER}/SimpleTimerWP.h
 )
+add_definitions(-DFREERTOSCONFIG_RELATIVE_PATH="${ROOT_PATH}/FreeRTOSConfig.h")
 
 add_executable(${PROJ_NAME} ${SOURCES} ${HEADERS})
 
