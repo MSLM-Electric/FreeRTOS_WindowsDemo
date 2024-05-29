@@ -168,12 +168,14 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 }
 #endif
 
-
+#ifdef DEBUG_ON_VS
+///*static*/ int _HandlerMode = 0;
+#endif
 /* Determine whether we are in thread mode or handler mode. */
 static int inHandlerMode (void)
 {
 #ifdef DEBUG_ON_VS
-    return 0;//?! Enabled only Thread Mode. It means that cmsis_os fucntions have to be used only on inside tasks and not from ISR/IRQ(interrupt handlers). I don't know how to simulate the Thread Mode and Handler Mode of ARM processors
+    return _HandlerMode;//?! Enabled only Thread Mode. It means that cmsis_os fucntions have to be used only on inside tasks and not from ISR/IRQ(interrupt handlers).
 #else
     return __get_IPSR() != 0;
 #endif // DEBUG_ON_VS
@@ -458,7 +460,7 @@ osTimerId osTimerCreate (const osTimerDef_t *timer_def, os_timer_type type, void
 * @retval  status code that indicates the execution status of the function
 * @note   MUST REMAIN UNCHANGED: \b osTimerStart shall be consistent in every CMSIS-RTOS.
 */
-/*osStatus osTimerStart(osTimerId timer_id, uint32_t millisec)
+osStatus osTimerStart(osTimerId timer_id, uint32_t millisec)
 {
   osStatus result = osOK;
 #if (configUSE_TIMERS == 1)  
@@ -489,7 +491,7 @@ osTimerId osTimerCreate (const osTimerDef_t *timer_def, os_timer_type type, void
   result = osErrorOS;
 #endif
   return result;
-}*/
+}
 
 /**
 * @brief  Stop a timer.

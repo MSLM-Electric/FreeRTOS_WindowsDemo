@@ -1178,7 +1178,14 @@ UBaseType_t task_enter_critical_from_isr(void);
 */
 void task_exit_critical_from_isr(UBaseType_t uxSavedInterruptStatus);
 
-
+#ifdef DEBUG_ON_VS
+static int _HandlerMode = 0;
+#define simulatePROCESSOR_HANDLER_MODE() _HandlerMode=1
+#define simulatePROCESSOR_THREAD_MODE()  _HandlerMode=0
+/*for more readable*/ /*use next defines before calling cmsis funcs inside isr*/
+#define simulateENABLING_HANDLER_MODE simulatePROCESSOR_HANDLER_MODE
+#define simulateDISABLING_HANDLER_MODE simulatePROCESSOR_THREAD_MODE
+#endif
 
 #ifdef  __cplusplus
 }

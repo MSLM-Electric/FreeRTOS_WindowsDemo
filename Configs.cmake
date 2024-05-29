@@ -1,7 +1,7 @@
 ##
 get_filename_component(GLOB_DEFINES_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)  #TODO: test it 
 set(MAIN_PROJECT_AND_CONFIGS_PATH "${GLOB_DEFINES_DIR}/" CACHE PATH "Path to main projects location") #FORCE)
-message(STATUS "main projects location path: ${MAIN_PROJECT_AND_CONFIGS_PATH}") 
+message(STATUS "Main Projects location path: ${MAIN_PROJECT_AND_CONFIGS_PATH}") 
 
 add_definitions(-DDEBUG_ON_VS)
 add_definitions(-DCMSIS_OS_ENABLE)
