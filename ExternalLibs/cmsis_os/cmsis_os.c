@@ -175,7 +175,8 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 static int inHandlerMode (void)
 {
 #ifdef DEBUG_ON_VS
-    return _HandlerMode;//?! Enabled only Thread Mode. It means that cmsis_os fucntions have to be used only on inside tasks and not from ISR/IRQ(interrupt handlers).
+    return _HandlerMode;//?! Enabled only Thread Mode. It means that cmsis_os functions have to be used only on inside tasks and not from ISR/IRQ(interrupt handlers). 
+                        //If you want use cmsis functions inside the ISR/IRQ sections then call simulateENABLING_HANDLER_MODE() before functions. And at the end of ISR section (before exit) call simulateDISABLING_HANDLER_MODE()
 #else
     return __get_IPSR() != 0;
 #endif // DEBUG_ON_VS
