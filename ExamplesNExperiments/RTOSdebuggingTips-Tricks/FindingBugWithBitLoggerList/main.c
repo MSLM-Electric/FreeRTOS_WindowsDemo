@@ -118,6 +118,7 @@ int main( int argc, char **argv  )
 	InitTimerWP(&BugScannerTimer, (tickptr_fn*)osKernelSysTick);
 	LaunchTimerWP((U32_ms)2000, &BugScannerTimer);  //For long processes the delay setting value should be longer/big value too! (For example 10s, 20s)
 
+	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
 	/* Install the handler for the software interrupt.  The syntax necessary
 		to do this is dependent on the FreeRTOS port being used.  The syntax
 		shown here can only be used with the FreeRTOS Windows port, where such

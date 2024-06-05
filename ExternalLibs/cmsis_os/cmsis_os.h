@@ -1177,11 +1177,21 @@ UBaseType_t task_enter_critical_from_isr(void);
 *
 */
 void task_exit_critical_from_isr(UBaseType_t uxSavedInterruptStatus);
-
 #ifdef DEBUG_ON_VS
+SemaphoreHandle_t GlobHandlerModeMutex;
 static int _HandlerMode = 0;
-#define simulatePROCESSOR_HANDLER_MODE() _HandlerMode=1
-#define simulatePROCESSOR_THREAD_MODE()  _HandlerMode=0
+//(xSemaphoreTakeFromISR(GlobHandlerModeMutex, pdFALSE) != pdTRUE)
+//(xSemaphoreGiveFromISR(mutex_id, pdFALSE) != pdTRUE)
+/*#define simulatePROCESSOR_HANDLER_MODE() portBASE_TYPE taskWoken = pdFALSE;\
+                                         xSemaphoreTakeFromISR(GlobHandlerModeMutex, &taskWoken);\
+                                         _HandlerMode=1;\
+                                         xSemaphoreGiveFromISR(GlobHandlerModeMutex, &taskWoken)
+#define simulatePROCESSOR_THREAD_MODE()  xSemaphoreTakeFromISR(GlobHandlerModeMutex, &taskWoken);\
+                                         _HandlerMode=0;\
+                                         xSemaphoreGiveFromISR(GlobHandlerModeMutex, &taskWoken)*/ //portBASE_TYPE taskWoken = pdFALSE;\*/
+void init_simulatePROCESSOR_MODES(void);
+void simulatePROCESSOR_HANDLER_MODE(void); //?! Not tested yet! Coming soon...
+void simulatePROCESSOR_THREAD_MODE(void);  //?! Not tested yet! Coming soon...
 /*for more readable*/ /*use next defines before calling cmsis funcs inside isr*/
 #define simulateENABLING_HANDLER_MODE simulatePROCESSOR_HANDLER_MODE
 #define simulateDISABLING_HANDLER_MODE simulatePROCESSOR_THREAD_MODE

@@ -170,6 +170,29 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 
 #ifdef DEBUG_ON_VS
 ///*static*/ int _HandlerMode = 0;
+void init_simulatePROCESSOR_MODES(void)
+{
+    GlobHandlerModeMutex = xSemaphoreCreateMutex();
+    portBASE_TYPE taskWoken = pdFALSE;
+    xSemaphoreGive(GlobHandlerModeMutex, &taskWoken);
+    //_HandlerMode = 0;
+}
+
+void simulatePROCESSOR_HANDLER_MODE(void)
+{
+    portBASE_TYPE taskWoken = pdFALSE;
+    xSemaphoreTakeFromISR(GlobHandlerModeMutex, &taskWoken);
+    _HandlerMode = 1;
+    xSemaphoreGiveFromISR(GlobHandlerModeMutex, &taskWoken);
+}
+
+void simulatePROCESSOR_THREAD_MODE(void)
+{
+    portBASE_TYPE taskWoken = pdFALSE;
+    xSemaphoreTakeFromISR(GlobHandlerModeMutex, &taskWoken);
+    _HandlerMode = 0;
+    xSemaphoreGiveFromISR(GlobHandlerModeMutex, &taskWoken);
+}
 #endif
 /* Determine whether we are in thread mode or handler mode. */
 static int inHandlerMode (void)
@@ -1018,7 +1041,7 @@ void *osPoolAlloc (osPoolId pool_id)
     
     if (pool_id->markers[index] == 0) {
       pool_id->markers[index] = 1;
-      p = (void *)((uint32_t)(pool_id->pool) + (index * pool_id->item_sz));
+      p = (void *)((uint64_t)(pool_id->pool) + (index * pool_id->item_sz));
       pool_id->currentIndex = index;
       break;
     }

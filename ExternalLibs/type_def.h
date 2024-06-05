@@ -37,6 +37,7 @@ typedef volatile unsigned short const vuc16;
 typedef volatile unsigned char const vuc8;
 
 typedef u8 u8_t;
+typedef s8 s8_t;
 typedef u16 u16_t;
 typedef u32 u32_t;
 
@@ -66,12 +67,19 @@ typedef u32 u32_t;
 //
 //#define asm __asm
 //
-//#if defined __MINGW32__
-//#define MCU_PACK __attribute__((packed, gcc_struct))
-//#else
-//#define MCU_PACK __attribute__((packed))
-//#endif
-//
+
+
+#if defined __MINGW32__
+#define MCU_PACK __attribute__((packed, gcc_struct))
+#elif defined DEBUG_ON_VS
+#define STRINGIFY(a) #a
+#define PRAGMA _Pragma
+#define MCU_PACK PRAGMA(STRINGIFY(pack(push, 4)))
+#define END_MCU_PACK PRAGMA(STRINGIFY(pack(pop)))
+#else
+#define MCU_PACK __attribute__((packed))
+#endif
+
 //#define MCU_NAKED __attribute__((naked))
 //#define MCU_ALIGN(x) __attribute__((aligned (x)))
 //#define MCU_ALWAYS_INLINE __attribute__((always_inline))

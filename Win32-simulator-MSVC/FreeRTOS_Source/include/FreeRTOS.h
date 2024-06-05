@@ -834,6 +834,11 @@ point support. */
 #ifdef CMSIS_OS_ENABLE
 UBaseType_t critical_nesting_count(void);
 #endif // CMSIS_OS_ENABLE
+#ifdef DEBUG_ON_VS
+#include "semphr.h"
+extern SemaphoreHandle_t GlobHandlerModeMutex;
+#endif // DEBUG_ON_VS
+
 #ifdef __cplusplus
 }
 #endif
