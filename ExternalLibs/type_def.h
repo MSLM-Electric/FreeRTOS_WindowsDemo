@@ -4,7 +4,6 @@
 #define     __O     volatile                  /*!< defines 'write only' permissions     */
 #define     __IO    volatile                  /*!< defines 'read / write' permissions   */
 
-#define MCU_PACK __attribute__((packed))
 typedef signed long long int s64;
 typedef signed long int s32;
 typedef signed short s16;
@@ -85,5 +84,11 @@ typedef u32 u32_t;
 //#define MCU_ALWAYS_INLINE __attribute__((always_inline))
 //#define MCU_NEVER_INLINE __attribute__((noinline))
 //#define FNCT_NO_RETURN __attribute__((noreturn))
+
+/*!!! @TODO: 
+debug_printf()
+#define debug_assert(message, assertion) if(NOT (assertion))\
+	{debug_printf("%s failed in %s:%d", message, __FILE__, __LINE__);}
+*/
 
 #endif// TYPE_DEF_H

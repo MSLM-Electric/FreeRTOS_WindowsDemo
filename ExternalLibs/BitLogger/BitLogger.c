@@ -26,14 +26,19 @@ SOFTWARE.*/
 
 void InitBitLoggerList(BitLoggerList_t* BitLogger)
 {
-	memset(BitLogger->cntr32bit, 0, sizeof(BitLogger->cntr32bit));
-	memset(BitLogger->_tempCntr, 0, sizeof(BitLogger->_tempCntr));
+#if DISABLE_BIT_LOGGER == 0
+	//memset(BitLogger->cntr32bit, 0, sizeof(BitLogger->cntr32bit));
+	//memset(BitLogger->_tempCntr, 0, sizeof(BitLogger->_tempCntr));
+	memset(BitLogger, 0x0, sizeof(BitLoggerList_t));
 	//You may init here the simple timer and Launch
+#endif //DISABLE_BIT_LOGGER
 	return;
 }
 
 uint32_t BitLoggerList(BitLoggerList_t *BitLogger)  //InspectBitLoggerList //? mb on here sounds better?
 {
+	uint32_t res = 0;
+#if DISABLE_BIT_LOGGER == 0
 	//if(IsTimerWPRinging(BitLogger->BugScannerTimer)){
 	//RestartTimerWP(BitLogger->BugScannerTimer);
 	for (uint8_t u = 0; u < 32; u++) {
@@ -44,7 +49,12 @@ uint32_t BitLoggerList(BitLoggerList_t *BitLogger)  //InspectBitLoggerList //? m
 		BitLogger->_tempCntr[u] = BitLogger->cntr32bit[u];
 	}
 	//}
-	return BitLogger->Q32bit;
+#ifdef MASK_BITSLIST
+	BitLogger->maskedQ32bit = BitLogger->Q32bit & (~BitLogger->mask);
+#endif // MASK_BITSLIST
+	res = BitLogger->Q32bit;
+#endif //DISABLE_BIT_LOGGER
+	return res;
 }
 
 
@@ -58,6 +68,7 @@ Look the example at FreeRTOS_demo_experiments\ExamplesAndExperiments\RTOSdebuggi
 as a reference to guidance. I admit that its not deeply and confidently tested. But it is for while I hope!*/
 void SetBitToLoggerList(uint32_t inputBITx, BitLoggerList_t* BitLogger) //InspectBitToLoggerList //?sounds better?
 {
+#if DISABLE_BIT_LOGGER == 0
 	uint32_t signal = 0;
 	for (uint8_t u = 0; u < 32; u++)
 	{
@@ -70,11 +81,13 @@ void SetBitToLoggerList(uint32_t inputBITx, BitLoggerList_t* BitLogger) //Inspec
 			BitLogger->Q32bit &= ~BIT(u);
 		}*/
 	}
+#endif //DISABLE_BIT_LOGGER
 	return;
 }
 
 void ResetSpecBitOnLoggerList(uint32_t inputBITx, BitLoggerList_t* BitLogger)
 {
+#if DISABLE_BIT_LOGGER == 0
 	uint8_t u;
 	for (u = 0; u < 32; u++)
 	{
@@ -85,4 +98,14 @@ void ResetSpecBitOnLoggerList(uint32_t inputBITx, BitLoggerList_t* BitLogger)
 		}
 	}
 	return;
+#endif //DISABLE_BIT_LOGGER
 }
+
+#ifdef MASK_BITSLIST
+void SetMaskToBitLogger(BitLoggerList_t* BitLogger, uint32_t maskVal) 
+{
+#if DISABLE_BIT_LOGGER == 0
+	BitLogger->mask = maskVal;
+#endif //DISABLE_BIT_LOGGER
+}
+#endif // MASK_BITSLIST

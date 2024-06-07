@@ -63,6 +63,8 @@
 
 #include "../../../ExternalLibs/BitLogger/BitLogger.h"
 #include "../../../ExternalLibs/SimpleTimer/SimpleTimerWP.h"
+#include "../../../ExternalLibs/type_def.h"
+#include <stdio.h>
 
 /* Used as a loop counter to create a very crude delay. */
 #define mainDELAY_LOOP_COUNT		( 0xffffff )
@@ -81,12 +83,15 @@ void vSomeAnotherTask( void *pvParameters );
 void smBuggyTaskWhichNotCatched(const void *pvParameters);
 void smBuggyTask2WhichSuccesfullyDetected(void *pvParameters);
 void smBuggyTask3WhichSuccesfullyDetected(void* pvParameters);
+void smGoodTaskWhichHasntBug(void* pvParameters);
 void HardwareTimerInterruption_Immitate(void* pvParameters);
 void xPortSysTickHandler(void);
 static U32_ms osKernelSysTick(void);
 
 static /*or extern*/ BitLoggerList_t BugsBitList;
 static Timerwp_t BugScannerTimer;
+static Timerwp_t BugBitReportTimer;
+static u16 BitPos(u16 Bit);
 
 /* The service routine for the (simulated) interrupt.  This is the interrupt
 that the task will be synchronized with. */
@@ -113,11 +118,13 @@ int main( int argc, char **argv  )
 	}
 	xTaskCreate(smBuggyTask2WhichSuccesfullyDetected, "Buggy task 2 which detected", 100, NULL, 1, NULL);
 	xTaskCreate(smBuggyTask3WhichSuccesfullyDetected, "Buggy task 3 which detected", 100, NULL, 1, NULL);
+	xTaskCreate(smGoodTaskWhichHasntBug, "Some good task", 50, NULL, 1, NULL);
 	xTaskCreate(HardwareTimerInterruption_Immitate, "Timer Interrupt", 100, NULL, 1, NULL);
 	InitBitLoggerList(&BugsBitList);
 	InitTimerWP(&BugScannerTimer, (tickptr_fn*)osKernelSysTick);
 	LaunchTimerWP((U32_ms)2000, &BugScannerTimer);  //For long processes the delay setting value should be longer/big value too! (For example 10s, 20s)
-
+	InitTimerWP(&BugBitReportTimer, (tickptr_fn*)osKernelSysTick);
+	LaunchTimerWP((U32_ms)1000, &BugBitReportTimer);
 	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
 	/* Install the handler for the software interrupt.  The syntax necessary
 		to do this is dependent on the FreeRTOS port being used.  The syntax
@@ -140,14 +147,28 @@ int main( int argc, char **argv  )
 
 void vSomeAnotherTask( void *pvParameters )
 {
-const char *pcTaskName = "Some another task running!\r\n";
-volatile uint32_t ul;
+	const char *pcTaskName = "Some another task running!\r\n";
+	volatile uint32_t ul;
+	static char buffer[200];
 
 	/* As per most tasks, this task is implemented in an infinite loop. */
 	for( ;; )
 	{
 		/* Print out the name of this task. */
 		vPrintString( pcTaskName );
+		if (IsTimerWPRinging(&BugBitReportTimer)) {
+			RestartTimerWP(&BugBitReportTimer);
+			memset(buffer, 0, sizeof(buffer));
+			size_t tmplen = 0;
+			//taskENTER_CRITICAL();
+			for (uint8_t u = 0; u < 32; u++) {
+				tmplen = strlen(buffer);
+				if(BugsBitList.Q32bit & BIT(u))
+					sprintf(&buffer[tmplen], "BIT%d: %d   ", u, ((BugsBitList.Q32bit & BIT(u)) > 0));
+			}
+			printf("%s\n", buffer);
+			//taskEXIT_CRITICAL();
+		}
 
 		/* Delay for a period. */
 		vTaskDelay(50);
@@ -197,7 +218,7 @@ void smBuggyTask2WhichSuccesfullyDetected(void *pvParameters)
 		volatile static uint8_t buggytime = 1;
 
 		/* The Mr. Bug Inspector! */ //INSPC.1.) Put Inspector code to detect the kuking bug
-		ResetSpecBitOnLoggerList(BIT(4), &BugsBitList); //?! you may not write this line even 
+		ResetSpecBitOnLoggerList(BIT(4), &BugsBitList);
 		/* The Mr. Bug Inspector --------------------------------------------------------- */
 
 		while(buggytime)
@@ -217,9 +238,27 @@ void smBuggyTask3WhichSuccesfullyDetected(void* pvParameters) {
 	for (;;) {
 		volatile delayTime = 10;
 		vTaskDelay(10);
+		ResetSpecBitOnLoggerList(BIT(20), &BugsBitList);
 		while (1) {
 			vTaskDelay(delayTime);
 			SetBitToLoggerList(BIT(20), &BugsBitList);
+		}
+	}
+}
+
+void smGoodTaskWhichHasntBug(void* pvParamgeters)
+{
+	volatile uint32_t ul;
+
+	for (;;) {
+		volatile delayTime = 50;
+		vTaskDelay(10);
+		ResetSpecBitOnLoggerList(BIT(5), &BugsBitList);
+		uint32_t WhatAhappyFlagMmmm = 5;
+		while (WhatAhappyFlagMmmm) {
+			vTaskDelay(delayTime);
+			SetBitToLoggerList(BIT(5), &BugsBitList);
+			WhatAhappyFlagMmmm--;
 		}
 	}
 }
@@ -280,4 +319,13 @@ void xPortSysTickHandler(void)
 #ifdef DEBUG_ON_VS
 	return (U32_ms)GetTickCount();
 #endif // DEBUG_ON_VS
+}
+
+static u16 BitPos(u16 Bit)
+{
+	u16 res = 0;
+	while ((Bit >> res) > 1) {
+		res++;
+	}
+	return res;
 }
