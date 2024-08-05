@@ -110,7 +110,7 @@ int main( int argc, char **argv  )
 					1,			/* This task will run at priority 1. */
 					NULL );		/* We are not using the task handle. */
 
-	/* Create the other task in exactly the same way. */
+	/* Create the array of tasks in exactly the same way. */
 	for (uint8_t u = 0; u < 6; u++) {
 		char taskName[] = "Buggy task N";
 		taskName[/*11*/strlen(taskName) - 1] = 0x30 + u;

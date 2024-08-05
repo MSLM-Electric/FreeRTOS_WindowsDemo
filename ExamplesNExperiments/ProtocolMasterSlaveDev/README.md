@@ -1,0 +1,1 @@
+No RTOS. At first we immitate the interrupt sections of hardware peripheral (timer & interface). The main background processes would be in the another created task! Only one task named backgroundProcesses!

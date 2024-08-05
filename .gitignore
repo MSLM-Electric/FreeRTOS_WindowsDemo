@@ -9,6 +9,7 @@ TempRsrv
 ExamplesNExperiments/TaskExecuteLogger
 ExamplesNExperiments/packet_improvement_test
 ExamplesNExperiments/packet_task_test
+ExamplesNExperiments/Lwip_memhandling
 !*.c
 !*.h
 !*.json
