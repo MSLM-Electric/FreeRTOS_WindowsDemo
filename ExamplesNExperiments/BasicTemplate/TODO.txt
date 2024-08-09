@@ -13,3 +13,6 @@ set(PROJ_NAME SomeMineProject)
 5. Create build folder
 6. enter to it
 7. do cmake ..
+
+Another required work:
+Test cmsis_os library simulations
