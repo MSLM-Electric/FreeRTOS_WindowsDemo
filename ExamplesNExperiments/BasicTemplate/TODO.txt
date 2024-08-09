@@ -1,0 +1,15 @@
+Write python scripts to launch a template FreeRTOS project
+
+smthing as:
+python -SomeMineProject
+-->
+1. create SomeMineProject folder
+2. enter to it
+3. Write on CMakeLists.txt the:
+project(SomeMineProject)
+set(PROJ_NAME SomeMineProject)
+... and other left texts (export the CMakeLists.txt template)
+4. Export/write main.c file template
+5. Create build folder
+6. enter to it
+7. do cmake ..
