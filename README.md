@@ -3,9 +3,10 @@ FreeRTOS Windows Port
 It is for simulating on Visual Studio.
 ```
 Buildable CMakeLists.txt located on:
+
 [**BasicTemplate project** here](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate)
 
-[**and here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)
+and another example [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)
 
 
 How To:
