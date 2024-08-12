@@ -33,5 +33,7 @@ cmake ..
 - After successfully built project go to **_/build_** folder and open the  **"MyProjectForExample.sln"** file.
 - After opening it on VS (*not ~~VS Code!~~*) set the main project ("_MyProjectForExample_") as startup project. To do it open **_Solution Explorer_** window on VS and 
 chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExample_ in list. Now you can launch the VS debug.
+
 <sup>**_Note:_** _Unfortunatly I've found some buggy moment on VS 2019 Debug Launch. It doesn't shows the consoles processes/writings after Debug start so to avoid it just do a few restarts._</sup>
+
 <sup>**_Note:_** _CMSIS OS functions simulations testing in progress._</sup>
