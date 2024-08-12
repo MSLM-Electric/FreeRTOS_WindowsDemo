@@ -178,7 +178,7 @@ void init_simulatePROCESSOR_MODES(void)
     //_HandlerMode = 0;
 }
 
-void simulatePROCESSOR_HANDLER_MODE(void)
+void simulatePROCESSOR_HANDLER_MODE(void)  //matchable in "ISR" mode
 {
     portBASE_TYPE taskWoken = pdFALSE;
     xSemaphoreTakeFromISR(GlobHandlerModeMutex, &taskWoken);
@@ -186,7 +186,7 @@ void simulatePROCESSOR_HANDLER_MODE(void)
     xSemaphoreGiveFromISR(GlobHandlerModeMutex, &taskWoken);
 }
 
-void simulatePROCESSOR_THREAD_MODE(void)
+void simulatePROCESSOR_THREAD_MODE(void)  //matchable in "simple background" mode
 {
     portBASE_TYPE taskWoken = pdFALSE;
     xSemaphoreTakeFromISR(GlobHandlerModeMutex, &taskWoken);
