@@ -1,11 +1,10 @@
+
 FreeRTOS Windows Port
 ```
 It is for simulating on Visual Studio.
 ```
 Buildable CMakeLists.txt located on:
-
 [**BasicTemplate project** here](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate)
-
 and another example [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)
 
 
@@ -30,3 +29,6 @@ mkdir build
 cd build
 cmake ..
 ```
+- After successfully built project go to **_/build_** folder and open the  **"MyProjectForExample.sln"** file.
+- After opening it on VS (*not ~~VS Code!~~*) set the main project ("_MyProjectForExample_") as startup project. To do it open **_Solution Explorer_** window on VS and 
+chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExample_ in list. Now you can launch the VS debug. 

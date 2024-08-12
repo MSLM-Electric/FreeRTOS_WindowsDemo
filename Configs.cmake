@@ -1,5 +1,5 @@
 ##
-get_filename_component(GLOB_DEFINES_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)  #TODO: test it 
+get_filename_component(GLOB_DEFINES_DIR "${CMAKE_CURRENT_LIST_FILE}" DIRECTORY)  #T
 set(MAIN_PROJECT_AND_CONFIGS_PATH "${GLOB_DEFINES_DIR}/" CACHE PATH "Path to main projects location") #FORCE)
 message(STATUS "Main Projects location path: ${MAIN_PROJECT_AND_CONFIGS_PATH}") 
 
