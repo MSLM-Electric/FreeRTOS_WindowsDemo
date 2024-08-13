@@ -96,9 +96,13 @@
 #include <conio.h>
 
 /* FreeRTOS includes. */
+#ifndef FREERTOS_V10
 #include "../FreeRTOS_Source/include/FreeRTOS.h"
 #include "../FreeRTOS_Source/include/task.h"
-
+#else
+#include "../FreeRTOSv10_Source/include/FreeRTOS.h"
+#include "../FreeRTOSv10_Source/include/task.h"
+#endif // !FREERTOS_V10
 /* If this variable is true then pressing a key will end the application.  Some
 examples set this to pdFALSE to allow key presses to be used by the
 application. */

@@ -98,12 +98,22 @@
   ******************************************************************************
   */
 #include "../type_def.h"
+#ifndef FREERTOS_V10
 #include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/FreeRTOS.h"
 #include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/task.h"
 #include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/timers.h"
 #include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/queue.h"
 #include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/semphr.h"
 #include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/event_groups.h"
+#else
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/FreeRTOS.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/task.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/timers.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/queue.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/semphr.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/event_groups.h"
+#endif // !FREERTOS_V10
+
 
 /**
 \page cmsis_os_h Header File Template: cmsis_os.h
