@@ -4,6 +4,8 @@
 #define     __O     volatile                  /*!< defines 'write only' permissions     */
 #define     __IO    volatile                  /*!< defines 'read / write' permissions   */
 
+#include <stdio.h>
+
 typedef signed long long int s64;
 typedef signed long int s32;
 typedef signed short s16;
@@ -47,6 +49,105 @@ typedef u32 u32_t;
   #define FALSE 0
 #endif
 
+
+#ifndef NOT
+#define NOT !
+#endif // !NOT
+
+#ifndef ONLY
+#define ONLY  //!just for beautyfying and readabiling/readability code
+#endif // !ONLY
+
+#ifndef STILL
+#define STILL  //!just for beautyfying and readabiling code
+#endif // !STILL
+
+#ifndef NOTHING
+#define NOTHING 0 //!just for beautyfying and readability code
+#endif // !NOTHING
+
+#ifndef SOMETHING 
+#ifdef NULL
+#define SOMETHING ~NULL
+#endif // NULL
+#endif // !SOMETHING 
+
+
+#ifndef UNUSED
+#define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
+#endif // !UNUSED
+
+#define clearBITS(x) &= ~(u32)(x)
+#define setBITS(x) |= (x)
+//#define BITPOS(x) y = while((x >> 1) > 1){y++};
+#define asm __asm
+//u16 BitPos(u16 Bit);
+//u16 BitPos(u16 Bit)
+//{
+//	u16 res = 0;
+//	while ((Bit >> res) > 1) {
+//		res++;
+//	}
+//	return res;
+//}
+
+#ifndef DEBUG_PRINTF
+#ifndef DISABLE_LOGS
+#define DEBUG_PRINTF(enable, message) do{\
+                                     if(enable)\
+                                        printf message;\
+                                    }while(0)\
+
+#define DEBUG_PRINTFS(enable, message) do{\
+                                     if(enable)\
+                                        printf_s message;\
+                                    }while(0)\
+
+#else
+#define DEBUG_PRINTF(enable, message)
+#define DEBUG_PRINTFS(enable, message)
+#endif // !DISABLE_LOGS
+#endif // !DEBUG_PRINTF
+
+#define LINE_EXECUTE_PRINT(x) do{\
+                            if(x)\
+                                printf("line executed: %s: %d\n", __FILE__, __LINE__); \
+                        }while(0)\
+
+/*gcc (optimiz. QT) not compatible/dangerous //? void *CUT_FILES_PATH()
+#define MINIMIZE_FILE_PATH
+#ifdef MINIMIZE_FILE_PATH
+//MINIMIZE_FILE_PATH for unload to printing
+inline char* CUT_FILES_PATH(char* x, int siz) {
+    if (siz > 3) {
+        if (x[siz - 2] == '.')
+            if ((x[siz - 1] == 'h') || (x[siz - 1] == 'c')) {
+                int pos = siz - 3;
+                while ((x[pos--] != '\\') && (pos));
+                return (char*)&x[pos];
+            }
+    }
+    return x;
+}
+
+#define LINE_EXECUTE_PRINTM(x) do{\
+                            if(x)\
+                                printf("line executed: %s: %d\n", CUT_FILES_PATH(__FILE__, strlen(__FILE__)), __LINE__); \
+                        }while(0)\
+
+#define LINE_EXECUTE_PRINT LINE_EXECUTE_PRINTM
+#else
+#define LINE_EXECUTE_PRINT LINE_EXECUTE_PRINTF
+#endif
+#define CUT_TEST LINE_EXECUTE_PRINT*/
+
+//#ifdef __func__
+#define FUNCTION_EXECUTE_PRINT(x) do{\
+                            if(x)\
+                                printf("func executed: %s(): %d\n", __func__, __LINE__); \
+                        }while(0)\
+
+//#endif //!__func__
 
 #define asm __asm
 
