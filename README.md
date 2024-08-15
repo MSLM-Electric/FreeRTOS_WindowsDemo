@@ -15,8 +15,8 @@ How To:
 - If you want create yourself project you can refer to BasicTemplate project located 
 [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate):
 - First of all clone this repo (FreeRTOS_WindowsDemo)
-- And then create your projects folder on inside ExamplesNExperiments folder.
-- Copy the mentioned project BasicTemplate files to your created folder.
+- And then create your projects folder on inside ExamplesNExperiments folder ('FreeRTOS_WindowsDemo/ExamplesNExperiments').
+- Copy the mentioned BasicTemplate project files to your created folder.
 - Go to CMakeLists.txt file on your project folder.
 - Open file and edit the next lines (*line* **2** and **3**) by specifying your projects name i.e. *MyProjectForExample*:
 ```

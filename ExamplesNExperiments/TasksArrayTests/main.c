@@ -84,6 +84,7 @@ to the application. */
 void vSomeAnotherTask( void *pvParameters );
 void HardwareTimerInterruption_Immitate(void* pvParameters);
 void xPortSysTickHandler(void);
+void MultipleTasksByOneFunction(void* pvParameters);
 #ifndef CMSIS_OS_ENABLE
 static U32_ms osKernelSysTick(void);
 #endif // CMSIS_OS_ENABLE
@@ -93,6 +94,9 @@ static /*or extern*/ BitLoggerList_t BugsBitList;
 static Timerwp_t BugScannerTimer;
 static Timerwp_t BugBitReportTimer;
 static u16 BitPos(u16 Bit);
+static Timerwp_t TimersArray[6];
+static u32 crudeDelay[6];
+static u32 crudeCntr[6];
 
 /* The service routine for the (simulated) interrupt.  This is the interrupt
 that the task will be synchronized with. */
@@ -110,6 +114,17 @@ int main( int argc, char **argv  )
 					NULL,		/* We are not using the task parameter. */
 					1,			/* This task will run at priority 1. */
 					NULL );		/* We are not using the task handle. */
+	/* Create the array of tasks in exactly the same way. */
+	char taskNo[6] = { '0','1','2','3','4','5' };
+	for (uint8_t u = 0; u < 6; u++) {
+		char taskName[] = "Buggy task N";
+		taskName[strlen(taskName) - 1] = taskNo[u];//0x30 + u;
+		xTaskCreate(MultipleTasksByOneFunction, taskName, 100, &taskNo[u], 1, NULL);
+		/*The created array of tasks uses only single field vars of functional code/referenced task code*/
+	}
+	InitTimerGroup(TimersArray, (tickptr_fn*)osKernelSysTick, 6, (U32_ms)50);
+	memset(crudeDelay, 0, sizeof(crudeDelay));
+	memset(crudeCntr, 0, sizeof(crudeCntr));
 
 	xTaskCreate(HardwareTimerInterruption_Immitate, "Timer Interrupt", 100, NULL, 1, NULL);
 	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
@@ -190,6 +205,41 @@ void HardwareTimerInterruption_Immitate(void* pvParameters)
 		vTaskDelay(1);
 		vPortGenerateSimulatedInterrupt(mainINTERRUPT_NUMBER);
 		vPortGenerateSimulatedInterrupt(timerINTERRUPT_NUMBER);
+	}
+}
+
+#define CHAR_TO_NUM(x) x-0x30
+void MultipleTasksByOneFunction(void* pvParameters)
+{
+	char* pcTaskName = "Task N";
+	uint8_t taskID = *(uint8_t*)pvParameters;
+
+	const char* additnstr = " running";
+	//const char* taskInfo[40];
+
+	volatile uint32_t ul;
+	u32 u = *(uint8_t*)pvParameters;
+	RestartTimerWP(&TimersArray[CHAR_TO_NUM(*(uint8_t*)pvParameters)]);
+
+	for (;;)
+	{		
+		//taskID = *(uint8_t*)pvParameters;
+		if (IsTimerWPRinging(&TimersArray[CHAR_TO_NUM(taskID)])) {
+			RestartTimerWP(&TimersArray[CHAR_TO_NUM(taskID)]);
+			pcTaskName[strlen(pcTaskName) - 1] = taskID;
+			vPrintTwoStrings(pcTaskName, additnstr);
+			//DEBUG_PRINTF(1, ("ptr_u = %p\n", &u));
+			DEBUG_PRINTMNUM(1, "ptr_u = ", &u);
+			DEBUG_PRINTMNUM(1, "val u = ", CHAR_TO_NUM(u));
+		}
+		ul = taskID;
+		//vTaskDelay(2);		
+		if (CHAR_TO_NUM (*(uint8_t*)pvParameters) < 3) {
+			for (u=0; u < 0x3FFF0000; u++); //crude delay
+		}
+		if (taskID != (*(uint8_t*)pvParameters)) {
+			DEBUG_PRINTF(1, ("Bug found on Task %d, taskID not matches to pvParameter\n", *(uint8_t*)pvParameters)); //! Tested and never happened!!! should never go to here!
+		}
 	}
 }
 

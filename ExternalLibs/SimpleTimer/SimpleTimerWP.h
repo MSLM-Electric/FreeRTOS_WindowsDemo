@@ -5,7 +5,7 @@
 #include <string.h> //only for memset
 
 #ifndef __SIMPLETIMER_H_
-//#define DEBUG_ON_VS //This is from Config.cmake
+//#define DEBUG_ON_VS //delete this line if you don't want debug on VS!!!
 #ifdef DEBUG_ON_VS
 #include <Windows.h>
 #endif
@@ -56,20 +56,24 @@ typedef struct {
 }stopwatchwp_t;
 
 void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction);
+void InitStopWatchGroup(stopwatchwp_t* stopwatchArr, tickptr_fn* SpecifyTickFunction, uint8_t qnty);
 void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction);
+void InitTimerGroup(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals);
 uint32_t StopWatchWP(stopwatchwp_t* timeMeasure);
 uint32_t CyclicStopWatchWP(stopwatchwp_t* timeMeasure, uint16_t Ncycle);
 
 void LaunchTimerWP(uint32_t time, Timerwp_t* Timer);
 void StopTimerWP(Timerwp_t* Timer);
+void StopTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers);
 uint8_t IsTimerWPStarted(Timerwp_t* Timer);
 uint8_t IsTimerWPRinging(Timerwp_t* Timer);
 uint8_t RestartTimerWP(Timerwp_t* Timer);
+uint8_t RestartTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers);
 void catchBreakPoint(uint32_t *var); //Click to set breakpoint there where it called when debugging
 #ifdef USE_REGISTERING_TIMERS_WITH_CALLBACK
-uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn* SpecifyTickFunc);
-uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);
-uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);
+uint8_t RegisterTimerCallback(Timerwp_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn* SpecifyTickFunc);  //RegisterTimerWithCallbackToList() sounds better
+uint8_t UnRegisterTimerCallback(Timerwp_t* Timer);                                                                                            //UnRegisterTimerWithCallbackFromList()
+uint8_t RegisteredTimersCallbackHandle(Timerwp_t* Timer);  ///HandleRegisteredTimersOnList() RegisteredTimersFromListHandle()
 uint8_t getRegisterTimersMaxIndex(void);
 #endif // USE_REGISTERING_TIMERS_WITH_CALLBACK
 //#define USING_RTOS

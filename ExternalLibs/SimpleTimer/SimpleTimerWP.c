@@ -17,8 +17,6 @@
 * 2. Redistributions in binary form must reproduce the above copyright notice,
 * this list of conditionsand the following disclaimer in the documentation
 * and /or other materials provided with the distribution.
-* 3. The name of the author may not be used to endorse or promote products
-* derived from this software without specific prior written permission.
 *
 * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
 * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -32,6 +30,7 @@
 	* OF SUCH DAMAGE.
 
 	Author: github.com/MSLM-Electric/
+	E-mail: mslmelectric@gmail.com
 */
 
 #include "SimpleTimerWP.h"  //WP means "WITH POINTER". 
@@ -67,10 +66,18 @@ void InitStopWatchWP(stopwatchwp_t* timeMeasure, tickptr_fn* SpecifyTickFunction
 	timeMeasure->ptrToTick = SpecifyTickFunction;
 }
 
+void InitStopWatchGroup(stopwatchwp_t *stopwatchArr, tickptr_fn* SpecifyTickFunction, uint8_t qnty)
+{
+	uint8_t u;
+	for (u = 0; u < qnty; u++) {
+		InitStopWatchWP(&stopwatchArr[u], SpecifyTickFunction);
+	}
+}
+
 void InitTimerWP(Timerwp_t* Timer, tickptr_fn* SpecifyTickFunction)
 {
+	memset(Timer, 0, sizeof(Timerwp_t));
 	Timer->ptrToTick = SpecifyTickFunction;
-	StopTimerWP(Timer);
 }
 
 //StopWatchPointToPointStart(&watch);
@@ -130,16 +137,44 @@ void LaunchTimerWP(uint32_t time, Timerwp_t* Timer)
 	return;
 }
 
-void StopTimerWP(Timerwp_t* Timer) //or RestartTimer
+void StopTimerWP(Timerwp_t* Timer)
 {
 	if (Timer != NULL) {
 		//if (Timer->ptrToTick == NULL)
 		//	return;
-		//Timer->setVal = 0; //!?
+		//Timer->setVal = 0;
 		Timer->launchedTime = 0;
 		Timer->Start = 0;
 	}
 	return;
+}
+
+void InitTimerGroup(Timerwp_t* ArrTimers, tickptr_fn* SpecifyTickFunction, uint8_t qntyTimers, uint32_t setVals)
+{
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		InitTimerWP(&ArrTimers[u], SpecifyTickFunction);
+		ArrTimers[u].setVal = setVals;
+	}
+}
+
+void StopTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+{
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		StopTimerWP(&ArrTimers[u]);
+	}
+}
+
+uint8_t RestartTimerGroup(Timerwp_t* ArrTimers, uint8_t qntyTimers)
+{
+	uint8_t res = 0;
+	for (uint8_t u = 0; u < qntyTimers; u++)
+	{
+		//if (ArrTimers[u].TimType != PERIODIC_TIMER)
+			res |= RestartTimerWP(&ArrTimers[u]);
+	}
+	return res;
 }
 
 uint8_t IsTimerWPStarted(Timerwp_t* Timer) {
@@ -157,7 +192,7 @@ uint8_t IsTimerWPRinging(Timerwp_t* Timer) {
 			return 0;
 		if (Timer->Start) {
 			uint32_t tickTime = (uint32_t)(Timer->ptrToTick());
-			if ((tickTime - Timer->launchedTime) > Timer->setVal)
+			if ((tickTime - Timer->launchedTime) >= Timer->setVal)
 				return 1; //yes, timer is ringing!
 		}
 	}
