@@ -40,10 +40,10 @@ chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExamp
 
 Buildable and worky projects:
 ```
-BasicTemplate
-RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
-TasksArrayTests
-TimerID_using
+1. BasicTemplate
+2. RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
+3. TasksArrayTests
+4. TimerID_using
 ```
 
 

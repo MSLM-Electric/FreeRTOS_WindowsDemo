@@ -211,7 +211,7 @@ static void sntpRXtimer_callback(TimerHandle_t timer)
 		}
 	}
 	//else
-	//;//bad!
+		//;//bad!
 
 	/*to see the timers ID in debug wathclist write:*/
 	/* ((Timer_t*)timer)->pvTimerID*/
