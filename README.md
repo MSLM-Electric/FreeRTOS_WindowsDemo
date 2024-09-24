@@ -45,3 +45,10 @@ RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
 TasksArrayTests
 TimerID_using
 ```
+
+
+In progress:
+```
+5. TemplateFreeRTOSv10test
+6. ProtocolMasterSlaveDev
+```
