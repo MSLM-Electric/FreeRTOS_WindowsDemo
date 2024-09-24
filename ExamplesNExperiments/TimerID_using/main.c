@@ -54,12 +54,12 @@
 */
 
 /* FreeRTOS.org includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
+#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/FreeRTOS.h"
+#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/task.h"
+#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/timers.h"
 
 /* Demo includes. */
-#include "supporting_functions.h"
+#include "../../Win32-simulator-MSVC/Supporting_Functions/supporting_functions.h"
 
 /* Used as a loop counter to create a very crude delay. */
 #define mainDELAY_LOOP_COUNT		( 0xffffff )
@@ -124,6 +124,8 @@ int main( void )
 		shown here can only be used with the FreeRTOS Windows port, where such
 		interrupts are only simulated. */
 	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulExampleInterruptHandler);
+	static char sntpmsg[] = "SNTP Timer ring!\n";
+	vTimerSetTimerID(xSNTP_RXTimeoutHandle, sntpmsg);
 	xTimerStart(xSNTP_RXTimeoutHandle, 0);
 	xTimerStart(xTransmitHandle, 0);
 	someProcessInitReset();
@@ -202,14 +204,22 @@ static uint32_t ulExampleInterruptHandler(void)
 static void sntpRXtimer_callback(TimerHandle_t timer)
 {
 	if (timer != NULL) {
-		void* timHandle;
-		timHandle = pvTimerGetTimerID(timer);
-		if (timHandle) {
-			vPrintString("SNTP Timer ring!\n");
+		void* timID;
+		timID = pvTimerGetTimerID(timer);
+		if (timID) {
+			vPrintString((char*)timID);
 		}
 	}
 	//else
-		//;//bad!
+	//;//bad!
+
+	/*to see the timers ID in debug wathclist write:*/
+	/* ((Timer_t*)timer)->pvTimerID*/
+	/*to see the chars of that load that attached to ID write:*/
+	/* (char*)(((Timer_t*)timer)->pvTimerID)*/
+	/*to see the content detailed write:*/
+	/* (char*)(((Timer_t*)timer)->pvTimerID), 10  - for Visual Studio*/
+	/* (char*)(((Timer_t*)timer)->pvTimerID)[0, 10]  - for QT Creator*/
 }
 
 static void transmitTimer_callback(TimerHandle_t timer)
