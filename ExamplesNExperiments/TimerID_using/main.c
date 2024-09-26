@@ -154,7 +154,7 @@ volatile uint32_t ul;
 		vPrintString( pcTaskName );
 
 		/* Delay for a period. */
-		vTaskDelay(50);
+		vTaskDelay(500);
 		//xTimerReset(xSNTP_RXTimeoutHandle, 0);
 	}
 }
@@ -171,7 +171,7 @@ volatile uint32_t ul;
 		/* Print out the name of this task. */
 		vPrintString( pcTaskName );
 
-		vTaskDelay(50);
+		vTaskDelay(500);
 		if (somePcb.transmitting == 0) {
 			xTimerStart(xSomeTransmitProcHandle, 0);
 			somePcb.transmitting = 1;
@@ -217,9 +217,9 @@ static void sntpRXtimer_callback(TimerHandle_t timer)
 	/* ((Timer_t*)timer)->pvTimerID*/
 	/*to see the chars of that load that attached to ID write:*/
 	/* (char*)(((Timer_t*)timer)->pvTimerID)*/
-	/*to see the content detailed write:*/
-	/* (char*)(((Timer_t*)timer)->pvTimerID), 10  - for Visual Studio*/
-	/* (char*)(((Timer_t*)timer)->pvTimerID)[0, 10]  - for QT Creator*/
+	/*or to see the content more detailed write:*/
+	/* (char*)(((Timer_t*)timer)->pvTimerID), 10      - for Visual Studio*/
+	/* (char*)(((Timer_t*)timer)->pvTimerID)[0, 10]   - for QT Creator*/
 }
 
 static void transmitTimer_callback(TimerHandle_t timer)

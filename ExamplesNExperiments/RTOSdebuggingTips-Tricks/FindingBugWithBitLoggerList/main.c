@@ -105,7 +105,7 @@ int main( int argc, char **argv  )
 	/* Create one of the two tasks. */
 	xTaskCreate(vSomeAnotherTask,		/* Pointer to the function that implements the task. */
 					"PacketTimeout Task",	/* Text name for the task.  This is to facilitate debugging only. */
-					1000,		/* Stack depth - most small microcontrollers will use much less stack than this. */
+					100,		/* Stack depth - most small microcontrollers will use much less stack than this. */
 					NULL,		/* We are not using the task parameter. */
 					1,			/* This task will run at priority 1. */
 					NULL );		/* We are not using the task handle. */
@@ -173,7 +173,7 @@ void vSomeAnotherTask( void *pvParameters )
 		}
 
 		/* Delay for a period. */
-		vTaskDelay(50);
+		vTaskDelay(500);
 	}
 }
 /*-----------------------------------------------------------*/
@@ -220,7 +220,7 @@ void smBuggyTask2WhichSuccesfullyDetected(void *pvParameters)
 	{
 		vPrintString( pcTaskName );
 		
-		vTaskDelay(10);
+		vTaskDelay(100);
 		volatile static uint8_t buggytime = 1;
 
 		/* The Mr. Bug Inspector! */ //INSPC.1.) Put Inspector code to detect the kuking bug
@@ -229,7 +229,7 @@ void smBuggyTask2WhichSuccesfullyDetected(void *pvParameters)
 
 		while(buggytime)
 		{
-			vTaskDelay(1);
+			vTaskDelay(10);
 			buggytime;//ooooh, we're stuck here, but we couldn't looking for this bug...
 
 			/* The Mr. Bug Inspector in action ------ */  //INSPC.2.) and put here this too!
@@ -242,8 +242,8 @@ void smBuggyTask3WhichSuccesfullyDetected(void* pvParameters) {
 	volatile uint32_t ul;
 
 	for (;;) {
-		volatile delayTime = 10;
-		vTaskDelay(10);
+		volatile delayTime = 50;
+		vTaskDelay(100);
 		ResetSpecBitOnLoggerList(BIT(20), &BugsBitList);
 		while (1) {
 			vTaskDelay(delayTime);
@@ -258,7 +258,7 @@ void smGoodTaskWhichHasntBug(void* pvParamgeters)
 
 	for (;;) {
 		volatile delayTime = 50;
-		vTaskDelay(10);
+		vTaskDelay(100);
 		ResetSpecBitOnLoggerList(BIT(5), &BugsBitList);
 		uint32_t WhatAhappyFlagMmmm = 5;
 		while (WhatAhappyFlagMmmm) {
