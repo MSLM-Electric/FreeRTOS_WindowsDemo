@@ -111,7 +111,7 @@ int main( int argc, char **argv  )
 					NULL );		/* We are not using the task handle. */
 
 	xTaskCreate(HardwareTimerInterruption_Immitate, "Timer Interrupt", 100, NULL, 1, NULL);
-	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
+	//init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
 	/* Install the handler for the software interrupt.  The syntax necessary
 		to do this is dependent on the FreeRTOS port being used.  The syntax
 		shown here can only be used with the FreeRTOS Windows port, where such
