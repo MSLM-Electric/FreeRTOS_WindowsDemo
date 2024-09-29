@@ -22,7 +22,7 @@ set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/
 set(EXTERNAL_LIBS "${ROOT_PATH}/${BACK_FROM_ROOT}/ExternalLibs")
 set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
 set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
-set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
+#set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
 if(CMSIS_OS_ENABLE_FLAG)
     set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
 endif()

@@ -617,5 +617,12 @@ int32_t lMutexNeedsReleasing;
 		}
 	}
 }
+#ifdef CMSIS_OS_ENABLE
+UBaseType_t critical_nesting_count(void) {
+	/* Not implemented in ports where there is nothing to return to.
+	Artificially force an assert. */
+	return ulCriticalNesting;
+}
+#endif //CMSIS_OS_ENABLE
 /*-----------------------------------------------------------*/
 

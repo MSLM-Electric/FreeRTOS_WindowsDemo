@@ -44,11 +44,11 @@ Buildable and worky projects:
 2. RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
 3. TasksArrayTests
 4. TimerID_using
+5. TemplateFreeRTOSv10test  (upgrated to FreeRTOS v10.0.1 and compliled. CMSIS OS compalible too but simulations of it not tested!)
 ```
 
 
 In progress:
 ```
-5. TemplateFreeRTOSv10test
 6. ProtocolMasterSlaveDev
 ```
