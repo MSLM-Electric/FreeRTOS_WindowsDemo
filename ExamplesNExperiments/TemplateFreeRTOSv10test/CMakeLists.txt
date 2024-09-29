@@ -34,6 +34,7 @@ set(SOURCES
     ${FREERTOS_SRCS}/queue.c
     ${FREERTOS_SRCS}/tasks.c
     ${FREERTOS_SRCS}/timers.c
+    ${FREERTOS_SRCS}/croutine.c
 
     ${FREERTOS_PORTABLE}/MemMang/heap_4.c
     ${FREERTOS_PORTABLE}/MSVC-MingW/port.c

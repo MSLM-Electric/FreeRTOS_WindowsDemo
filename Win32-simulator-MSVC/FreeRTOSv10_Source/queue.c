@@ -38,7 +38,7 @@ task.h is included from an application file. */
 #include "include/queue.h"
 
 #if ( configUSE_CO_ROUTINES == 1 )
-	#include "croutine.h"
+	#include "include/croutine.h"
 #endif
 
 /* Lint e961 and e750 are suppressed as a MISRA exception justified because the
