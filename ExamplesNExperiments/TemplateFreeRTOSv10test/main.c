@@ -194,7 +194,7 @@ void HardwareTimerInterruption_Immitate(void* pvParameters)
 
 extern void vApplicationIdleHook(void)
 {
-	//vPrintString("Idle task\n");
+	vPrintString("Idle task\n");
 	return;
 }
 

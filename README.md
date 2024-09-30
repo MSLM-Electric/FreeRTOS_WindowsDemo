@@ -5,9 +5,10 @@ FreeRTOS Windows Port
 It is for simulating on Visual Studio.
 ```
 Buildable CMakeLists.txt located on:
-[**BasicTemplate project** here](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate)
+[**BasicTemplate project**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate) here
 and another example [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)
 
+Also you can use the updated sources of **FreeRTOS v10.0.1** on [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/TemplateFreeRTOSv10test)
 
 How To:
 -------
@@ -44,7 +45,8 @@ Buildable and worky projects:
 2. RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
 3. TasksArrayTests
 4. TimerID_using
-5. TemplateFreeRTOSv10test  (upgrated to FreeRTOS v10.0.1 and compliled. CMSIS OS compalible too but simulations of it not tested!)
+5. TemplateFreeRTOSv10test  (upgrated to FreeRTOS v10.0.1 and compiled. 
+              CMSIS OS compalible too but simulations of it not tested!)
 ```
 
 
