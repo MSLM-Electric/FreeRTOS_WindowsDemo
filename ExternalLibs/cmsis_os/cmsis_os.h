@@ -1205,7 +1205,10 @@ void simulatePROCESSOR_THREAD_MODE(void);  //?! Not tested yet! Coming soon...
 /*for more readable*/ /*use next defines before calling cmsis funcs inside isr*/
 #define simulateENABLING_HANDLER_MODE simulatePROCESSOR_HANDLER_MODE
 #define simulateDISABLING_HANDLER_MODE simulatePROCESSOR_THREAD_MODE
-#endif
+#else
+#define simulateENABLING_HANDLER_MODE()
+#define simulateDISABLING_HANDLER_MODE()
+#endif // !DEBUG_ON_VS
 
 #ifdef  __cplusplus
 }

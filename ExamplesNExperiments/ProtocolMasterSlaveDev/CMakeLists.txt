@@ -1,14 +1,15 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(FindingBugWithBitLoggerList)
-set(PROJ_NAME FindingBugWithBitLoggerList)
+project(ProtocolMasterSlaveDev)
+set(PROJ_NAME ProtocolMasterSlaveDev)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
+add_definitions(-DFREERTOS_V10)
 
 set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 message("Start building project...")
 
-set(BACK_FROM_ROOT "../../..")
+set(BACK_FROM_ROOT "../..")
 set(FREERTOS_SRCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/FreeRTOSv10_Source")
 set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/${BACK_FROM_ROOT}/")
 
@@ -33,7 +34,6 @@ set(SOURCES
     ${FREERTOS_SRCS}/queue.c
     ${FREERTOS_SRCS}/tasks.c
     ${FREERTOS_SRCS}/timers.c
-
     ${FREERTOS_SRCS}/croutine.c
 
     ${FREERTOS_PORTABLE}/MemMang/heap_4.c
@@ -56,21 +56,20 @@ set(HEADERS
     ${FREERTOS_INC}/projdefs.h
     ${FREERTOS_INC}/queue.h
     ${FREERTOS_INC}/semphr.h
-    #${FREERTOS_INC}/StackMacros.h  #v8.2.3
+    #${FREERTOS_INC}/StackMacros.h #v8.2.3
     ${FREERTOS_INC}/stack_macros.h
     ${FREERTOS_INC}/task.h
     ${FREERTOS_INC}/timers.h
 
     ${FREERTOS_PORTABLE}/MSVC-MingW/portmacro.h
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.h
-    ${ROOT_PATH}/FreeRTOSv10Config.h
+    ${ROOT_PATH}/FreeRTOSConfig.h
 
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h
     ${SIMPLETIMER}/SimpleTimerWP.h
 )
-add_definitions(-DFREERTOS_V10)
-add_definitions(-DFREERTOSCONFIG_RELATIVE_PATH="${ROOT_PATH}/FreeRTOSv10Config.h")
+add_definitions(-DFREERTOSCONFIG_RELATIVE_PATH="${ROOT_PATH}/FreeRTOSConfig.h")
 
 add_executable(${PROJ_NAME} ${SOURCES} ${HEADERS})
 

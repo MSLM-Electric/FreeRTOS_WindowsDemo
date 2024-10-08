@@ -353,7 +353,7 @@ osStatus osThreadTerminate (osThreadId thread_id){
 * @note   MUST REMAIN UNCHANGED: \b osThreadYield shall be consistent in every CMSIS-RTOS.
 */
 osStatus osThreadYield (void){
-    taskYIELD();
+  taskYIELD();
   return osOK;
 }
 
@@ -523,7 +523,7 @@ osStatus osTimerStart(osTimerId timer_id, uint32_t millisec)
 * @retval  status code that indicates the execution status of the function.
 * @note   MUST REMAIN UNCHANGED: \b osTimerStop shall be consistent in every CMSIS-RTOS.
 */
-/*osStatus osTimerStop(osTimerId timer_id)
+osStatus osTimerStop(osTimerId timer_id)
 {
   osStatus result = osOK;
 #if (configUSE_TIMERS == 1)  
@@ -544,7 +544,7 @@ osStatus osTimerStart(osTimerId timer_id, uint32_t millisec)
   result = osErrorOS;
 #endif 
   return result;
-}*/
+}
 
 /**
 * @brief  Delete a timer.
@@ -552,7 +552,7 @@ osStatus osTimerStart(osTimerId timer_id, uint32_t millisec)
 * @retval  status code that indicates the execution status of the function.
 * @note   MUST REMAIN UNCHANGED: \b osTimerDelete shall be consistent in every CMSIS-RTOS.
 */
-/*osStatus osTimerDelete(osTimerId timer_id)
+osStatus osTimerDelete(osTimerId timer_id)
 {
 osStatus result = osOK;
 
@@ -572,7 +572,7 @@ osStatus result = osOK;
 #endif 
  
   return result;
-}*/
+}
 
 /***************************  Signal Management ********************************/
 /**
