@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(TemplateFreeRTOSv10test)
 set(PROJ_NAME TemplateFreeRTOSv10test)
+project(${PROJ_NAME})
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 add_definitions(-DFREERTOS_V10)

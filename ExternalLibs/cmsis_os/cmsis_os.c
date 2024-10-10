@@ -1041,7 +1041,13 @@ void *osPoolAlloc (osPoolId pool_id)
     
     if (pool_id->markers[index] == 0) {
       pool_id->markers[index] = 1;
-      p = (void *)((uint64_t/*//!uint32_t for not VS environments*/)(pool_id->pool) + (index * pool_id->item_sz));
+      p = (void *)((
+#ifdef DEBUG_ON_VS
+          uint64_t /*64bit environments*/
+#else
+          uint32_t /*//!uint32_t for not VS environments or for 32bit env*/
+#endif // !DEBUG_ON_VS
+          )(pool_id->pool) + (index * pool_id->item_sz));
       pool_id->currentIndex = index;
       break;
     }

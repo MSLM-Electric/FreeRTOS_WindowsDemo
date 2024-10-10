@@ -19,9 +19,8 @@ How To:
 - And then create your projects folder on inside ExamplesNExperiments folder ('FreeRTOS_WindowsDemo/ExamplesNExperiments').
 - Copy the mentioned BasicTemplate project files to your created folder.
 - Go to CMakeLists.txt file on your project folder.
-- Open file and edit the next lines (*line* **2** and **3**) by specifying your projects name i.e. *MyProjectForExample*:
+- Open file and edit the *line* **2** by specifying your projects name i.e. *MyProjectForExample*:
 ```
-project(MyProjectForExample)
 set(PROJ_NAME MyProjectForExample)
 ```
 - Save your edits and close file.

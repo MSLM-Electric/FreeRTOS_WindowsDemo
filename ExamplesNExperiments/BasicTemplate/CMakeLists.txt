@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(BasicTemplate)
 set(PROJ_NAME BasicTemplate)
+project(${PROJ_NAME})
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 

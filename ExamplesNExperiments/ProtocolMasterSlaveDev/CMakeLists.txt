@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ProtocolMasterSlaveDev)
 set(PROJ_NAME ProtocolMasterSlaveDev)
+project(${PROJ_NAME})
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 add_definitions(-DFREERTOS_V10)
@@ -21,7 +21,8 @@ set(FREERTOS_PORTABLE "${FREERTOS_SRCS}/portable")
 set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/Supporting_Functions")
 set(EXTERNAL_LIBS "${ROOT_PATH}/${BACK_FROM_ROOT}/ExternalLibs")
 set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
-set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
+set(SIMPLETIMER SpecLibs)
+set(HARDWAREINTERFACE_UNIT ${EXTERNAL_LIBS}/HardwareInterfaceUnit)
 #set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
 if(CMSIS_OS_ENABLE_FLAG)
     set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
@@ -42,6 +43,7 @@ set(SOURCES
 
     ${BITLOGGER}/BitLogger.c
     ${SIMPLETIMER}/SimpleTimerWP.c
+    ${HARDWAREINTERFACE_UNIT}/HardwareInterfaceUnit.c
     ${ROOT_PATH}/main.c
 )
 
@@ -68,6 +70,7 @@ set(HEADERS
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h
     ${SIMPLETIMER}/SimpleTimerWP.h
+    ${HARDWAREINTERFACE_UNIT}/HardwareInterfaceUnit.h
 )
 add_definitions(-DFREERTOSCONFIG_RELATIVE_PATH="${ROOT_PATH}/FreeRTOSConfig.h")
 

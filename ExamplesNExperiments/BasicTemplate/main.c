@@ -99,10 +99,46 @@ that the task will be synchronized with. */
 static uint32_t ulExampleInterruptHandler(void);
 static uint32_t ulTimerInterruptHandler(void);
 
+typedef struct MCU_PACK {
+	const char* location;
+	u16 channel;
+	int		client_node_id;
+	u8		slave_id;
+	//iotype_t	req_type;
+	u8		mb_function;
+	u16		address;
+	u16		count;
+	int		retries;
+	u8		error_code; // modbus error code (if any) of current request
+	int		prev_error; // error code of the last printed error message (0 when no error) 
+	u32 resp_timeout;
+	// buffer used to store located PLC variables
+	u16* plcv_buffer;
+	// buffer used to store data coming from / going to server
+	u16* coms_buffer;
+} client_request_t;
+
+#define NUMBER_OF_TCPCLIENT_REQTS 3
+#define NUMBER_OF_CLIENT_REQTS 5
+
+client_request_t	client_requests[NUMBER_OF_CLIENT_REQTS];
+
+#define CONVERT_NODE_INDEX_TO_NUM(x) x>0?client_requests[(NUMBER_OF_CLIENT_REQTS-NUMBER_OF_TCPCLIENT_REQTS-1)+x].client_node_id:0;
+
 /*-----------------------------------------------------------*/
 
 int main( int argc, char **argv  )
 {
+	uint8_t test = 1;
+	client_requests[2].client_node_id = 2;
+	client_requests[3].client_node_id = 3;
+	client_requests[4].client_node_id = 4;
+	test = CONVERT_NODE_INDEX_TO_NUM(test);
+	test = CONVERT_NODE_INDEX_TO_NUM(0);
+	test = CONVERT_NODE_INDEX_TO_NUM(2);
+	test = CONVERT_NODE_INDEX_TO_NUM(3);
+
+
 	/* Create one of the two tasks. */
 	xTaskCreate(vSomeAnotherTask,		/* Pointer to the function that implements the task. */
 					"Some Task",	/* Text name for the task.  This is to facilitate debugging only. */
@@ -145,7 +181,7 @@ void vSomeAnotherTask( void *pvParameters )
 		vPrintString( pcTaskName );
 
 		/* Delay for a period. */
-		vTaskDelay(50);
+		vTaskDelay(50); //
 	}
 }
 /*-----------------------------------------------------------*/
@@ -187,7 +223,7 @@ static uint32_t ulTimerInterruptHandler(void)
 void HardwareTimerInterruption_Immitate(void* pvParameters)
 {
 	for (;;) {
-		vTaskDelay(1);
+		vTaskDelay(100);
 		vPortGenerateSimulatedInterrupt(mainINTERRUPT_NUMBER);
 		vPortGenerateSimulatedInterrupt(timerINTERRUPT_NUMBER);
 	}

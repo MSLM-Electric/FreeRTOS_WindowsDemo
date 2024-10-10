@@ -63,7 +63,8 @@
 
 #include "../../ExternalLibs/cmsis_os/cmsis_os.h"
 #include "../../ExternalLibs/BitLogger/BitLogger.h"
-#include "../../ExternalLibs/SimpleTimer/SimpleTimerWP.h"
+//#include "../../ExternalLibs/SimpleTimer/SimpleTimerWP.h"
+#include "SpecLibs/SimpleTimerWP.h"
 #include "../../ExternalLibs/type_def.h"
 #include <stdio.h>
 
@@ -80,8 +81,9 @@ to the application. */
 #define PERIODIC_TIMER 1
 
 /* The task functions. */
-void vSomeAnotherTask( void *pvParameters );
-void HardwareTimerInterruption_Immitate(void* pvParameters);
+void vMasterCoreImmit( void *pvParameters );
+void vSlaveCoreImmit(void* pvParameters);
+void TimerInterruptionSimulate(void* pvParameters);
 void xPortSysTickHandler(void);
 #ifndef CMSIS_OS_ENABLE
 static U32_ms osKernelSysTick(void);
@@ -89,8 +91,8 @@ static U32_ms osKernelSysTick(void);
 
 
 static /*or extern*/ BitLoggerList_t BugsBitList;
-static Timerwp_t BugScannerTimer;
-static Timerwp_t BugBitReportTimer;
+//static Timerwp_t BugScannerTimer;
+//static Timerwp_t BugBitReportTimer;
 static u16 BitPos(u16 Bit);
 
 /* The service routine for the (simulated) interrupt.  This is the interrupt
@@ -98,19 +100,28 @@ that the task will be synchronized with. */
 static uint32_t ulExampleInterruptHandler(void);
 static uint32_t ulTimerInterruptHandler(void);
 
+static uint32_t ulMasterRXinterfaceUnitInterrupt(void);
+static uint32_t ulMasterTXinterfaceUnitInterrupt(void);
+static uint32_t ulSlaveRXinterfaceUnitInterrupt(void);
+static uint32_t ulSlaveTXinterfaceUnitInterrupt(void);
+static uint32_t ulTimerOfMasterInterrupt(void);
+static uint32_t ulTimerOfSlaveInterrupt(void);
 /*-----------------------------------------------------------*/
 
 int main( int argc, char **argv  )
 {
 	/* Create one of the two tasks. */
-	xTaskCreate(vSomeAnotherTask,		/* Pointer to the function that implements the task. */
-					"Some Task",	/* Text name for the task.  This is to facilitate debugging only. */
+	/*Master's Background application runner*/
+	xTaskCreate(vMasterCoreImmit,		/* Pointer to the function that implements the task. */
+					"Master Unit",	/* Text name for the task.  This is to facilitate debugging only. */
 					1000,		/* Stack depth - most small microcontrollers will use much less stack than this. */
 					NULL,		/* We are not using the task parameter. */
 					1,			/* This task will run at priority 1. */
 					NULL );		/* We are not using the task handle. */
+	/*Slave's Background application runner*/
+	xTaskCreate(vSlaveCoreImmit, "Slave Unit", 1000, NULL, 1, NULL);
 
-	xTaskCreate(HardwareTimerInterruption_Immitate, "Timer Interrupt", 100, NULL, 1, NULL);
+	xTaskCreate(TimerInterruptionSimulate, "Timer Interrupt", 100, NULL, 1, NULL);
 	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
 	/* Install the handler for the software interrupt.  The syntax necessary
 		to do this is dependent on the FreeRTOS port being used.  The syntax
@@ -118,6 +129,13 @@ int main( int argc, char **argv  )
 		interrupts are only simulated. */
 	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulExampleInterruptHandler);
 	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerInterruptHandler);
+	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulMasterRXinterfaceUnitInterrupt);
+	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulMasterTXinterfaceUnitInterrupt);
+	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulSlaveRXinterfaceUnitInterrupt);
+	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulSlaveTXinterfaceUnitInterrupt);
+	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfMasterInterrupt);
+	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfSlaveInterrupt);
+
 
 	/* Start the scheduler to start the tasks executing. */
 	vTaskStartScheduler();	
@@ -131,12 +149,22 @@ int main( int argc, char **argv  )
 }
 /*-----------------------------------------------------------*/
 
-void vSomeAnotherTask( void *pvParameters )
+#include "../../ExternalLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
+InterfacePortHandle_t MasterPort;
+InterfacePortHandle_t SlavePort;
+
+void vMasterCoreImmit( void *pvParameters )
 {
-	const char *pcTaskName = "Some another task running!\r\n";
+	const char *pcTaskName = "Master unit running!\r\n";
 	volatile uint32_t ul;
 	static char buffer[200];
 
+	InitMasterPort(&MasterPort);
+	MasterPort.communicationPeriod = 1000;
+	MasterPort.Status setBITS(PORT_READY);
+	Timert_t CommunPeriod;
+	InitTimerWP(&CommunPeriod, NULL);
+	LaunchTimerWP(MasterPort.communicationPeriod, &CommunPeriod);
 	/* As per most tasks, this task is implemented in an infinite loop. */
 	for( ;; )
 	{
@@ -145,11 +173,34 @@ void vSomeAnotherTask( void *pvParameters )
 
 		/* Delay for a period. */
 		vTaskDelay(50);
+		if (IsTimerWPRinging(&CommunPeriod)) {
+			RestartTimerWP(&CommunPeriod);
+			if (Write(&MasterPort, buffer, sizeof(buffer)) < 0)
+				vPrintString("Master Write failed\n");
+		}
 	}
 }
 /*-----------------------------------------------------------*/
 
-//#include <stdio.h>
+void vSlaveCoreImmit(void* pvParameters)
+{
+	const char* pcTaskName = "Slave unit running!\r\n";
+	volatile uint32_t ul;
+	static char buffer[200];
+
+	InitSlavePort(&SlavePort);
+	SlavePort.Status setBITS(PORT_READY);
+	/* As per most tasks, this task is implemented in an infinite loop. */
+	for (;; )
+	{
+		/* Print out the name of this task. */
+		vPrintString(pcTaskName);
+
+		/* Delay for a period. */
+		vTaskDelay(50);
+	}
+}
+/*-----------------------------------------------------------*/
 
 static uint32_t ulExampleInterruptHandler(void)
 {
@@ -179,17 +230,86 @@ static uint32_t ulTimerInterruptHandler(void)
 	xHigherPriorityTaskWoken = pdFALSE;
 
 	/*user code*/
-
+	simulatePROCESSOR_HANDLER_MODE();
+	someExternalTick++;
+	simulatePROCESSOR_THREAD_MODE();
 	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
-void HardwareTimerInterruption_Immitate(void* pvParameters)
+void TimerInterruptionSimulate(void* pvParameters)
 {
 	for (;;) {
 		vTaskDelay(1);
 		vPortGenerateSimulatedInterrupt(mainINTERRUPT_NUMBER);
 		vPortGenerateSimulatedInterrupt(timerINTERRUPT_NUMBER);
 	}
+}
+
+static uint32_t ulMasterRXinterfaceUnitInterrupt(void)
+{
+	BaseType_t xHigherPriorityTaskWoken;
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/*user code*/
+	simulatePROCESSOR_HANDLER_MODE();
+
+	simulatePROCESSOR_THREAD_MODE();
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+static uint32_t ulMasterTXinterfaceUnitInterrupt(void)
+{
+	BaseType_t xHigherPriorityTaskWoken;
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/*user code*/
+	simulatePROCESSOR_HANDLER_MODE();
+
+	simulatePROCESSOR_THREAD_MODE();
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+static uint32_t ulSlaveRXinterfaceUnitInterrupt(void)
+{
+	BaseType_t xHigherPriorityTaskWoken;
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/*user code*/
+	simulatePROCESSOR_HANDLER_MODE();
+
+	simulatePROCESSOR_THREAD_MODE();
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+static uint32_t ulSlaveTXinterfaceUnitInterrupt(void)
+{
+	BaseType_t xHigherPriorityTaskWoken;
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/*user code*/
+	simulatePROCESSOR_HANDLER_MODE();
+
+	simulatePROCESSOR_THREAD_MODE();
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+static uint32_t ulTimerOfMasterInterrupt(void) 
+{
+	BaseType_t xHigherPriorityTaskWoken;
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/*user code*/
+	simulatePROCESSOR_HANDLER_MODE();
+
+	simulatePROCESSOR_THREAD_MODE();
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+}
+static uint32_t ulTimerOfSlaveInterrupt(void) 
+{
+	BaseType_t xHigherPriorityTaskWoken;
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/*user code*/
+	simulatePROCESSOR_HANDLER_MODE();
+
+	simulatePROCESSOR_THREAD_MODE();
+	portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 extern void vApplicationIdleHook(void)
