@@ -106,6 +106,18 @@ static uint32_t ulSlaveRXinterfaceUnitInterrupt(void);
 static uint32_t ulSlaveTXinterfaceUnitInterrupt(void);
 static uint32_t ulTimerOfMasterInterrupt(void);
 static uint32_t ulTimerOfSlaveInterrupt(void);
+
+static uint32_t waitRXingFromMasterBySlave(void);
+static uint32_t waitTXingToSlaveByMaster  (void);
+static uint32_t waitRXingFromSlaveByMaster(void);
+static uint32_t waitTXingToMasterBySlave(void);
+
+#include "../../ExternalLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
+osPoolDef(mpool, 8, InterfacePortHandle_t);
+extern osPoolId mpool;
+osMessageQDef(MsgBox, 8, InterfacePortHandle_t);
+extern osMessageQId MsgBox;
+
 /*-----------------------------------------------------------*/
 
 int main( int argc, char **argv  )
@@ -120,6 +132,17 @@ int main( int argc, char **argv  )
 					NULL );		/* We are not using the task handle. */
 	/*Slave's Background application runner*/
 	xTaskCreate(vSlaveCoreImmit, "Slave Unit", 1000, NULL, 1, NULL);
+	
+	/*
+	waitRXingFromMasterBySlave, waits by    osMailGet() -> event -> generates the SlaveRXinterruption() and sets the osSignalSet() to MasterTX
+	waitTXingToSlaveByMaster,   waits by osSignalWait() -> event -> generates the MasterTXinterruption()
+	waitRXingFromSlaveByMaster, waits by    osMailGet() -> event -> generates the MasterRXinterruption() and sets the osSignalSet() to SlaveTX
+	waitTXingToMasterBySlave, waits by osSignalWait() -> event -> generates the SlaveTXinterruption()
+	*/
+	xTaskCreate(waitRXingFromMasterBySlave, "", 500, NULL, 1, NULL);
+	xTaskCreate(waitTXingToSlaveByMaster,   "", 500, NULL, 1, NULL);
+	xTaskCreate(waitRXingFromSlaveByMaster, "", 500, NULL, 1, NULL);
+	xTaskCreate(waitTXingToMasterBySlave, "", 500, NULL, 1, NULL);
 
 	xTaskCreate(TimerInterruptionSimulate, "Timer Interrupt", 100, NULL, 1, NULL);
 	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
@@ -136,6 +159,8 @@ int main( int argc, char **argv  )
 	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfMasterInterrupt);
 	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfSlaveInterrupt);
 
+	mpool = osPoolCreate(osPool(mpool));
+	MsgBox = osMessageCreate(osMessageQ(MsgBox), NULL);
 
 	/* Start the scheduler to start the tasks executing. */
 	vTaskStartScheduler();	
@@ -149,7 +174,6 @@ int main( int argc, char **argv  )
 }
 /*-----------------------------------------------------------*/
 
-#include "../../ExternalLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
 InterfacePortHandle_t MasterPort;
 InterfacePortHandle_t SlavePort;
 
@@ -200,6 +224,74 @@ void vSlaveCoreImmit(void* pvParameters)
 		vTaskDelay(50);
 	}
 }
+
+static uint32_t waitRXingFromMasterBySlave(void)
+{
+	//Init
+	InterfacePortHandle_t* ifsPort;
+	osEvent event;
+
+	for (;;) {
+		event = osMessageGet(MsgBox, osWaitForever);
+		if (event.status == osEventMessage) {
+			ifsPort = event.value.p;
+			if (ifsPort == &SlavePort) {
+				//SlaveRXinterruption()
+				osDelay(10);
+				/*I'v got from master then Master transmitted:*/
+				osSignalSet(/*MasterTXinterrupt()*/waitTXingToSlaveByMaster, 0x0001);
+			}
+		}
+	}
+}
+
+static uint32_t waitRXingFromSlaveByMaster(void)
+{
+	//Init
+	InterfacePortHandle_t* ifsPort;
+	osEvent event;
+
+	for (;;) {
+		event = osMessageGet(MsgBox, osWaitForever);
+		if (event.status == osEventMessage) {
+			ifsPort = event.value.p;
+			if (ifsPort == &MasterPort) {
+				//MasterRXinterruption()
+				osDelay(10);
+				/*I've got from slave then Slave transmitted*/
+				osSignalSet(/*SlaveTXinterrupt()*/waitTXingToMasterBySlave, 0x0002);
+			}
+		}
+	}
+}
+
+static uint32_t waitTXingToSlaveByMaster(void)
+{
+	InterfacePortHandle_t* ifsPort;
+	osEvent event;
+	for (;;) {
+		event = osSignalWait(0x0001, osWaitForever);
+		if (event.status == osEventSignal) {
+			//MasterTXinterruption()
+			osDelay(2);
+		}
+	}
+}
+
+static uint32_t waitTXingToMasterBySlave(void)
+{
+	InterfacePortHandle_t* ifsPort;
+	osEvent event;
+	for (;;) {
+		event = osSignalWait(0x0002, osWaitForever);
+		if (event.status == osEventSignal) {
+			//SlaveTXinterruption()
+			osDelay(2);
+		}
+	}
+}
+
+
 /*-----------------------------------------------------------*/
 
 static uint32_t ulExampleInterruptHandler(void)

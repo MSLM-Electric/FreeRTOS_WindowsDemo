@@ -88,6 +88,12 @@ typedef struct {
 #endif // !ENABLE_DELAYED_RECV
 }InterfacePortHandle_t;
 
+#if defined(DEBUG_ON_VS) && defined(CMSIS_OS_ENABLE)
+#include "../cmsis_os/cmsis_os.h"
+extern osPoolId mpool;
+extern osMessageQId MsgBox;
+#endif // !DEBUG_ON_VS && CMSIS_OS_ENABLE
+
 //extern InterfacePortHandle_t InterfacePort; //InterfacePort[ALL_CHANNELS] //InterfacePort[PORT0];
 int InitMasterPort(InterfacePortHandle_t* PortHandle);
 int InitSlavePort(InterfacePortHandle_t* PortHandle);

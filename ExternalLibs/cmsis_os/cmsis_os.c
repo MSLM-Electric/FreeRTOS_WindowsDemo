@@ -173,8 +173,7 @@ static osPriority makeCmsisPriority (unsigned portBASE_TYPE fpriority)
 void init_simulatePROCESSOR_MODES(void)
 {
     GlobHandlerModeMutex = xSemaphoreCreateMutex();
-    portBASE_TYPE taskWoken = pdFALSE;
-    xSemaphoreGive(GlobHandlerModeMutex, &taskWoken);
+    xSemaphoreGive(GlobHandlerModeMutex);
     //_HandlerMode = 0;
 }
 

@@ -11,6 +11,11 @@ extern SOCKET ListenSocket;
 extern HANDLE SocketMutex;
 #endif // HANDLING_WITH_IOFILE
 
+#if defined(DEBUG_ON_VS) && defined(CMSIS_OS_ENABLE)
+osPoolId mpool;
+osMessageQId MsgBox;
+#endif // !DEBUG_ON_VS && CMSIS_OS_ENABLE
+
 static void ErrorPortSendingHandle(InterfacePortHandle_t *Port);
 
 char mastersMessageId[] = MASTER_MESSAGE_ID;
@@ -71,6 +76,7 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 		PortHandle->Status clearBITS(PORT_SENDED | PORT_RECEIVED | PORT_RECEIVING | PORT_RECEIVED_ALL/*//?mb all not needed here*/);
 		LaunchTimerWP(PortHandle->SendingTimer.setVal, &PortHandle->SendingTimer);
 		//res = immitationOfPortsBus(PortHandle);
+		res = PortSendSimulation(PortHandle);
 		if (res < 0) {
 			DEBUG_PRINTF(1, ("Port sending ERROR!\n"));
 			ErrorPortSendingHandle(PortHandle);
@@ -480,6 +486,19 @@ void Called_RXInterrupt(void* arg) //ReceiveInterrupt()
 	return;
 }
 
+
+static int PortSendSimulation(InterfacePortHandle_t *PortHandle)
+{
+	int res = 0;
+#ifdef CMSIS_OS_ENABLE
+	//InterfacePortHandle_t* ifsPtr;
+	//ifsPtr = osPoolAlloc(mpool);
+	osMessagePut(MsgBox, (uint32_t /*not 64 bit in VS//?*/)PortHandle, 0/*osWaitForever*/);
+	//if (ifsPtr == NULL)
+		//res = -1;
+#endif // !CMSIS_OS_ENABLE
+	return res;
+}
 //#ifdef TRACE_PORT_ENABLE
 //#endif // TRACE_PORT_ENABLE
 //tracePortCfg_t PortTracer;

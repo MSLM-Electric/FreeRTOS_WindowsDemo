@@ -1214,4 +1214,4 @@ void simulatePROCESSOR_THREAD_MODE(void);  //?! Not tested yet! Coming soon...
 }
 #endif
 
-#endif  // _CMSIS_OS_H
+#endif  // !_CMSIS_OS_H

@@ -5,7 +5,7 @@
 #include <string.h> //only for memset
 
 #ifndef __SIMPLETIMER_H_
-#define DEBUG_ON_VS //delete this line if you don't want debug on VS!!!
+//#define DEBUG_ON_VS //delete this line if you don't want debug on VS!!!
 #ifdef DEBUG_ON_VS
 #include <Windows.h>
 #endif
