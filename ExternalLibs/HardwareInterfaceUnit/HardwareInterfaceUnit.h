@@ -29,7 +29,19 @@ typedef struct {
 	u8 clearFIFO;
 #endif //!IN_CASE_OF_FIFO_TYPE
 }HardwarePort_t;
+#define MASTER_SLAVE_IMMIT_IN_1CORE
+#if defined(DEBUG_ON_VS) && defined(MASTER_SLAVE_IMMIT_IN_1CORE)
+enum {
+	SLAVENO,
+	MASTERNO
+};
+HardwarePort_t HWPortN[2];
+
 HardwarePort_t HWPort;
+#else
+HardwarePort_t HWPort;
+#endif // 
+
 #pragma endregion
 
 #ifdef IOFILE_PATH
@@ -92,6 +104,10 @@ typedef struct {
 #include "../cmsis_os/cmsis_os.h"
 extern osPoolId mpool;
 extern osMessageQId MsgBox;
+typedef struct {
+	uint8_t BUFFER; //Hardware 8bit BUFFER Case
+	InterfacePortHandle_t* Port;
+}portsBuffer_t;
 #endif // !DEBUG_ON_VS && CMSIS_OS_ENABLE
 
 //extern InterfacePortHandle_t InterfacePort; //InterfacePort[ALL_CHANNELS] //InterfacePort[PORT0];

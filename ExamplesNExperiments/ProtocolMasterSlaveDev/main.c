@@ -113,10 +113,12 @@ static uint32_t waitRXingFromSlaveByMaster(void);
 static uint32_t waitTXingToMasterBySlave(void);
 
 #include "../../ExternalLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
-osPoolDef(mpool, 8, InterfacePortHandle_t);
+osPoolDef(mpool, 8, portsBuffer_t);
 extern osPoolId mpool;
-osMessageQDef(MsgBox, 8, InterfacePortHandle_t);
+osMessageQDef(MsgBox, 8, portsBuffer_t);
 extern osMessageQId MsgBox;
+TaskHandle_t xMasterTXsignal;
+TaskHandle_t xSlaveTXsignal;
 
 /*-----------------------------------------------------------*/
 
@@ -140,9 +142,9 @@ int main( int argc, char **argv  )
 	waitTXingToMasterBySlave, waits by osSignalWait() -> event -> generates the SlaveTXinterruption()
 	*/
 	xTaskCreate(waitRXingFromMasterBySlave, "", 500, NULL, 1, NULL);
-	xTaskCreate(waitTXingToSlaveByMaster,   "", 500, NULL, 1, NULL);
-	xTaskCreate(waitRXingFromSlaveByMaster, "", 500, NULL, 1, NULL);
-	xTaskCreate(waitTXingToMasterBySlave, "", 500, NULL, 1, NULL);
+	xTaskCreate(waitTXingToSlaveByMaster,   "", 500, NULL, 1, &xMasterTXsignal);
+	//xTaskCreate(waitRXingFromSlaveByMaster, "", 500, NULL, 1, NULL);
+	xTaskCreate(waitTXingToMasterBySlave, "", 500, NULL, 1, &xSlaveTXsignal);
 
 	xTaskCreate(TimerInterruptionSimulate, "Timer Interrupt", 100, NULL, 1, NULL);
 	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
@@ -152,12 +154,12 @@ int main( int argc, char **argv  )
 		interrupts are only simulated. */
 	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulExampleInterruptHandler);
 	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerInterruptHandler);
-	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulMasterRXinterfaceUnitInterrupt);
-	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulMasterTXinterfaceUnitInterrupt);
-	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulSlaveRXinterfaceUnitInterrupt);
-	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulSlaveTXinterfaceUnitInterrupt);
-	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfMasterInterrupt);
-	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfSlaveInterrupt);
+	//vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulMasterRXinterfaceUnitInterrupt);
+	//vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulMasterTXinterfaceUnitInterrupt);
+	//vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulSlaveRXinterfaceUnitInterrupt);
+	//vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulSlaveTXinterfaceUnitInterrupt);
+	//vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfMasterInterrupt);
+	//vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerOfSlaveInterrupt);
 
 	mpool = osPoolCreate(osPool(mpool));
 	MsgBox = osMessageCreate(osMessageQ(MsgBox), NULL);
@@ -184,11 +186,12 @@ void vMasterCoreImmit( void *pvParameters )
 	static char buffer[200];
 
 	InitMasterPort(&MasterPort);
-	MasterPort.communicationPeriod = 1000;
+	MasterPort.communicationPeriod = 1500;
 	MasterPort.Status setBITS(PORT_READY);
 	Timert_t CommunPeriod;
 	InitTimerWP(&CommunPeriod, NULL);
 	LaunchTimerWP(MasterPort.communicationPeriod, &CommunPeriod);
+	//sprintf(MasterPort.BufferToSend, "Assalamu aleykum RAFIQ!\n");
 	/* As per most tasks, this task is implemented in an infinite loop. */
 	for( ;; )
 	{
@@ -199,9 +202,10 @@ void vMasterCoreImmit( void *pvParameters )
 		vTaskDelay(50);
 		if (IsTimerWPRinging(&CommunPeriod)) {
 			RestartTimerWP(&CommunPeriod);
-			if (Write(&MasterPort, buffer, sizeof(buffer)) < 0)
+			if (Write(&MasterPort, "Assalamu aleykum RAFIQ!\n", sizeof(buffer)) < 0)
 				vPrintString("Master Write failed\n");
 		}
+		SendingTimerHandle(&MasterPort);
 	}
 }
 /*-----------------------------------------------------------*/
@@ -218,75 +222,93 @@ void vSlaveCoreImmit(void* pvParameters)
 	for (;; )
 	{
 		/* Print out the name of this task. */
-		vPrintString(pcTaskName);
-
+		//vPrintString(pcTaskName);
+		
 		/* Delay for a period. */
-		vTaskDelay(50);
+		vTaskDelay(2);
+		if (NOT (SlavePort.Status & PORT_BUSY)) {
+			memset(SlavePort.BufferRecved, 0, sizeof(SlavePort.BufferRecved));
+			Recv(&SlavePort, buffer, sizeof(buffer));
+		}
+		ReceivingTimerHandle(&SlavePort);
 	}
 }
 
 static uint32_t waitRXingFromMasterBySlave(void)
 {
 	//Init
-	InterfacePortHandle_t* ifsPort;
+	portsBuffer_t* ifsPort;
 	osEvent event;
 
 	for (;;) {
 		event = osMessageGet(MsgBox, osWaitForever);
 		if (event.status == osEventMessage) {
 			ifsPort = event.value.p;
-			if (ifsPort == &SlavePort) {
-				//SlaveRXinterruption()
-				osDelay(10);
-				/*I'v got from master then Master transmitted:*/
-				osSignalSet(/*MasterTXinterrupt()*/waitTXingToSlaveByMaster, 0x0001);
+			if ((uint64_t)event.value.p & (uint64_t)MsgBox & 0xFFFFFFFF00000000) {
+				if (ifsPort->Port == &MasterPort) {
+					//SlaveRXinterruption()
+					HWPortN[SLAVENO].BUFFER = ifsPort->BUFFER;
+					Called_RXInterrupt(&SlavePort);
+					//osDelay(10);
+					/*I'v got from master then Master transmitted:*/
+					osSignalSet(/*MasterTXinterrupt()*/xMasterTXsignal, 0x0001);
+					osPoolFree(mpool, ifsPort);
+				}
 			}
 		}
 	}
 }
 
-static uint32_t waitRXingFromSlaveByMaster(void)
-{
-	//Init
-	InterfacePortHandle_t* ifsPort;
-	osEvent event;
-
-	for (;;) {
-		event = osMessageGet(MsgBox, osWaitForever);
-		if (event.status == osEventMessage) {
-			ifsPort = event.value.p;
-			if (ifsPort == &MasterPort) {
-				//MasterRXinterruption()
-				osDelay(10);
-				/*I've got from slave then Slave transmitted*/
-				osSignalSet(/*SlaveTXinterrupt()*/waitTXingToMasterBySlave, 0x0002);
-			}
-		}
-	}
-}
+//static uint32_t waitRXingFromSlaveByMaster(void)
+//{
+//	//Init
+//	portsBuffer_t* ifsPort;
+//	osEvent event;
+//
+//	for (;;) {
+//		event = osMessageGet(MsgBox, osWaitForever);
+//		if (event.status == osEventMessage) {
+//			ifsPort = event.value.p;
+//			if ((uint64_t)event.value.p & (uint64_t)MsgBox & 0xFFFFFFFF00000000) {
+//				if (ifsPort->Port == &SlavePort) {
+//					//MasterRXinterruption()
+//					HWPortN[MASTERNO].BUFFER = ifsPort->BUFFER;
+//					Called_RXInterrupt(&MasterPort);
+//					//osDelay(10);
+//					/*I've got from slave then Slave transmitted*/
+//					osSignalSet(/*SlaveTXinterrupt()*/xSlaveTXsignal, 0x0002);
+//					osPoolFree(mpool, ifsPort);
+//				}
+//			}
+//		}
+//	}
+//}
 
 static uint32_t waitTXingToSlaveByMaster(void)
 {
-	InterfacePortHandle_t* ifsPort;
+	//portsBuffer_t* ifsPort;
 	osEvent event;
 	for (;;) {
 		event = osSignalWait(0x0001, osWaitForever);
 		if (event.status == osEventSignal) {
 			//MasterTXinterruption()
-			osDelay(2);
+			TransmitInterrupt(&MasterPort);
+			//osDelay(2);
 		}
+		osSignalClear(xMasterTXsignal, 0x0001);
 	}
 }
 
 static uint32_t waitTXingToMasterBySlave(void)
 {
-	InterfacePortHandle_t* ifsPort;
+	//portsBuffer_t* ifsPort;
 	osEvent event;
 	for (;;) {
 		event = osSignalWait(0x0002, osWaitForever);
 		if (event.status == osEventSignal) {
 			//SlaveTXinterruption()
-			osDelay(2);
+			TransmitInterrupt(&SlavePort);
+			//osDelay(2);
 		}
 	}
 }

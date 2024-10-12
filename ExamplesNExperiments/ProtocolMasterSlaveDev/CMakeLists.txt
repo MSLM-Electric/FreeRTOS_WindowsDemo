@@ -66,6 +66,7 @@ set(HEADERS
     ${FREERTOS_PORTABLE}/MSVC-MingW/portmacro.h
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.h
     ${ROOT_PATH}/FreeRTOSConfig.h
+    ${ROOT_PATH}/debug_print.h
 
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h

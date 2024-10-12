@@ -75,8 +75,10 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 		PortHandle->Status |= PORT_SENDING;
 		PortHandle->Status clearBITS(PORT_SENDED | PORT_RECEIVED | PORT_RECEIVING | PORT_RECEIVED_ALL/*//?mb all not needed here*/);
 		LaunchTimerWP(PortHandle->SendingTimer.setVal, &PortHandle->SendingTimer);
+		/*Simulation part*/
 		//res = immitationOfPortsBus(PortHandle);
-		res = PortSendSimulation(PortHandle);
+		u8 BUFFER = PortHandle->BufferToSend[PortHandle->outCursor];
+		res = PortSendSimulation(PortHandle, BUFFER);
 		if (res < 0) {
 			DEBUG_PRINTF(1, ("Port sending ERROR!\n"));
 			ErrorPortSendingHandle(PortHandle);
@@ -110,7 +112,9 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 		PortHandle->Status clearBITS(PORT_SENDED);
 		PortHandle->Status setBITS(PORT_SENDING);
 		HWPort.StartTX = 1;
-
+		/*Simulation part*/
+		u8 BUFFER = PortHandle->BufferToSend[PortHandle->outCursor];
+		PortSendSimulation(PortHandle, BUFFER);
 #ifdef ENABLE_DELAYED_RECV
 		if (PortHandle->DelayedRecv.DelayedRecv) {   //??? DelayedRecvAskedToDoAfterSending
 			void* arg = PortHandle->DelayedRecv.ifsArg; 
@@ -170,12 +174,16 @@ int Recv(InterfacePortHandle_t* PortHandle, uint8_t *outBuff, const int maxPossi
 	}
 	else if (((PortHandle->Status & (PORT_BUSY | PORT_RECEIVED)) == ONLY (PORT_BUSY | PORT_RECEIVED)) /*&& !IsRecvTimerRinging*/) {
 		//PortHandle->LenDataToRecv ..
-		LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
+		LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
 #ifdef IN_CASE_OF_FIFO_TYPE
 		memcpy(&PortHandle->BufferRecved[PortHandle->inCursor], HWPort.FIFO_BUFFER, sizeof(HWPort.FIFO_BUFFER));
 		PortHandle->inCursor += sizeof(HWPort.FIFO_BUFFER);
 		HWPort.clearFIFO = 1;//?mb
 #else
+		if(PortHandle->Status & PORT_MASTER)
+			PortHandle->BufferRecved[PortHandle->inCursor] = HWPortN[MASTERNO].BUFFER;
+		else
+			PortHandle->BufferRecved[PortHandle->inCursor] = HWPortN[SLAVENO].BUFFER;
 		PortHandle->inCursor++;
 #endif // !IN_CASE_OF_FIFO_TYPE
 		PortHandle->Status clearBITS(PORT_RECEIVED);
@@ -281,11 +289,15 @@ int SendingTimerHandle(InterfacePortHandle_t *Port) //!!<---  IsTimerWPStarted()
 	return res;
 }
 
+#ifdef DEBUG_ON_VS
+#include "../debug_print.h"
+#endif // DEBUG_ON_VS
+
 int ReceivingTimerHandle(InterfacePortHandle_t* PortHandle)
 {
 	int res = 0;
 	u8 IsRecvTimerRinging = IsTimerWPRinging(&PortHandle->ReceivingTimer);
-	FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
+	FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
 	if ((PortHandle->Status & (PORT_BUSY | PORT_RECEIVING)) == STILL ONLY (PORT_BUSY | PORT_RECEIVING)) {
 		if (NOT IsTimerWPStarted(&PortHandle->ReceivingTimer)) {
 			PortHandle->Status setBITS(PORT_ERROR);
@@ -307,7 +319,8 @@ int ReceivingTimerHandle(InterfacePortHandle_t* PortHandle)
 				//PortHandle->RecvErrCnt++;
 			}
 			PortHandle->LenDataToRecv = PortHandle->inCursor;
-			LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
+			LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
+			DEBUG_PRINTM(1, PortHandle->BufferRecved);
 		}
 		if((res == -1) || (IsRecvTimerRinging)){
 			HWPort.clearOrResetSomeFlags = 0;
@@ -480,22 +493,24 @@ void Called_RXInterrupt(void* arg) //ReceiveInterrupt()
 	InterfacePortHandle_t* Port = (InterfacePortHandle_t*)arg;
 	if ((Port->Status & (PORT_READY | PORT_RECEIVING)) == ONLY (PORT_READY | PORT_RECEIVING)) {
 		Port->Status |= PORT_RECEIVED;
-		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_FUNC*/1);
+		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_FUNC*/0);
 		Recv(Port, NULL,no_required_now);
 	}
 	return;
 }
 
 
-static int PortSendSimulation(InterfacePortHandle_t *PortHandle)
+static int PortSendSimulation(InterfacePortHandle_t *PortHandle, uint8_t BUFFER)
 {
 	int res = 0;
 #ifdef CMSIS_OS_ENABLE
-	//InterfacePortHandle_t* ifsPtr;
-	//ifsPtr = osPoolAlloc(mpool);
-	osMessagePut(MsgBox, (uint32_t /*not 64 bit in VS//?*/)PortHandle, 0/*osWaitForever*/);
-	//if (ifsPtr == NULL)
-		//res = -1;
+	portsBuffer_t* ifsPtr;
+	ifsPtr = osPoolAlloc(mpool);
+	ifsPtr->Port = PortHandle;
+	ifsPtr->BUFFER = BUFFER;
+	osMessagePut(MsgBox, (uint32_t /*not 64 bit in VS//?*/)ifsPtr, 0/*osWaitForever*/);
+	if (ifsPtr == NULL)
+		res = -1;
 #endif // !CMSIS_OS_ENABLE
 	return res;
 }
