@@ -141,13 +141,16 @@ inline char* CUT_FILES_PATH(char* x, int siz) {
 #endif
 #define CUT_TEST LINE_EXECUTE_PRINT*/
 
-//#ifdef __func__
+#define FUNCTION_EXECUTE_PRINT_EN 1
+#if (FUNCTION_EXECUTE_PRINT_EN )//&& defined (__func__)) //or __FUNCTION__
 #define FUNCTION_EXECUTE_PRINT(x) do{\
                             if(x)\
                                 printf("func executed: %s(): %d\n", __func__, __LINE__); \
                         }while(0)\
 
-//#endif //!__func__
+#else
+#define FUNCTION_EXECUTE_PRINT(x)
+#endif // !(FUNCTION_EXECUTE_PRINT_EN )
 
 #define asm __asm
 

@@ -33,8 +33,8 @@ static int InitPort(InterfacePortHandle_t* PortHandle)
 	PortHandle->Status = 0;
 	InitTimerWP(&PortHandle->ReceivingTimer, (tickptr_fn*)GetTickCount);
 	InitTimerWP(&PortHandle->SendingTimer, (tickptr_fn*)GetTickCount);
-	PortHandle->ReceivingTimer.setVal = (U32_ms)200; //Default 200ms
-	PortHandle->SendingTimer.setVal = (U32_ms)200; //def
+	PortHandle->ReceivingTimer.setVal = (U32_ms)600; //Default 200ms
+	PortHandle->SendingTimer.setVal = (U32_ms)600; //def
 	return res;
 }
 
@@ -119,7 +119,7 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 		if (PortHandle->DelayedRecv.DelayedRecv) {   //??? DelayedRecvAskedToDoAfterSending
 			void* arg = PortHandle->DelayedRecv.ifsArg; 
 			u16 Len = PortHandle->DelayedRecv.maxLen;
-			LINE_EXECUTE_PRINT(/*TRACE_RECV_FUNC*/0);
+			FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_FUNC*/0);
 			PortHandle->DelayedRecv.DelayedRecv(arg, Len);
 		}
 #endif // !ENABLE_DELAYED_RECV
@@ -127,26 +127,6 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 	else {
 		res = -4;
 	}
-	//!!! [NOTE.3.C] controling timers here is a bad approach!
-	//if (IsSendingTimerRinging && ((PortHandle->Status & (PORT_BUSY | PORT_SENDING)) == ONLY (PORT_BUSY | STILL PORT_SENDING))){
-	//	PortHandle->errCnt++;
-	//	HWPort.clearOrResetSomeFlags = 0;
-	//	HWPort.TXInterruptEnable = 0;
-	//	HWPort.clearFIFO = 1;
-	//	HWPort.someSettings = 0xFF;
-	//	//Error occur. Successfull sending should not reach Sending timeout! If SendingTimer Ringed then:
-	//	//PortHandle->Status setBITS(PORT_ERROR);
-	//	//PortHandle->sendErrCnt;
-	//	PortHandle->Status clearBITS(PORT_SENDING_LAST_BYTE | PORT_SENDING | PORT_BUSY);
-	//	StopTimerWP(&PortHandle->SendingTimer);
-	//	if (PortHandle->DelayedRecv.DelayedRecv) {   //??? DelayedRecvAskedToDoAfterSending
-	//		void* arg = PortHandle->DelayedRecv.ifsArg;
-	//		u16 Len = PortHandle->DelayedRecv.maxLen;
-	//		PortHandle->DelayedRecv.DelayedRecv(arg, Len);
-	//	}
-	//}
-	//if (PortHandle->Status & PORT_SENDING)
-		//res = PortHandle->outCursor;
 	return res;
 }
 
@@ -160,7 +140,7 @@ int Recv(InterfacePortHandle_t* PortHandle, uint8_t *outBuff, const int maxPossi
 #endif // !ENABLE_DELAYED_RECV
 		PortHandle->LenDataToRecv = maxPossibleSize;
 		PortHandle->inCursor = 0;
-		LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
+		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
 		RestartTimerWP(&PortHandle->ReceivingTimer);
 		PortHandle->Status setBITS(PORT_BUSY | PORT_RECEIVING);
 		PortHandle->Status clearBITS(PORT_RECEIVED | PORT_RECEIVED_ALL);
@@ -174,7 +154,7 @@ int Recv(InterfacePortHandle_t* PortHandle, uint8_t *outBuff, const int maxPossi
 	}
 	else if (((PortHandle->Status & (PORT_BUSY | PORT_RECEIVED)) == ONLY (PORT_BUSY | PORT_RECEIVED)) /*&& !IsRecvTimerRinging*/) {
 		//PortHandle->LenDataToRecv ..
-		LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
+		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
 #ifdef IN_CASE_OF_FIFO_TYPE
 		memcpy(&PortHandle->BufferRecved[PortHandle->inCursor], HWPort.FIFO_BUFFER, sizeof(HWPort.FIFO_BUFFER));
 		PortHandle->inCursor += sizeof(HWPort.FIFO_BUFFER);
@@ -198,7 +178,7 @@ int Recv(InterfacePortHandle_t* PortHandle, uint8_t *outBuff, const int maxPossi
 	else if ((PortHandle->Status & (PORT_BUSY | PORT_SENDING | PORT_RECEIVING)) == ONLY (PORT_BUSY | PORT_SENDING)) {//! mb reject from this feature
 		//Set DoDelayedCall callback for This function after sending if user asked to do it before
 		if (IsTimerWPStarted(&PortHandle->SendingTimer)) {
-			LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
+			FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
 #ifdef ENABLE_DELAYED_RECV
 			PortHandle->DelayedRecv.DelayedRecv = (DelayedRecv_fn*)Recv;
 			PortHandle->DelayedRecv.ifsArg = PortHandle;
@@ -209,29 +189,6 @@ int Recv(InterfacePortHandle_t* PortHandle, uint8_t *outBuff, const int maxPossi
 	else {
 		res = -4;
 	}
-	//if (IsRecvTimerRinging && (PortHandle->Status & STILL PORT_RECEIVING)) {
-	//	StopTimerWP(&PortHandle->ReceivingTimer);
-	//	HWPort.clearOrResetSomeFlags = 0;
-	//	HWPort.RXInterruptEnable = 0;
-	//	HWPort.StartRX = 0;
-	//	HWPort.someSettings = 0xff;
-	//	HWPort.clearFIFO = 1;
-	//	//memset(HWPort.FIFO_BUFFER, 0, sizeof(HWPort.FIFO_BUFFER /*.LenDataToRecv*/));
-	//	LINE_EXECUTE_PRINT(TRACE_RECV_TIMER);
-	//	PortHandle->Status clearBITS(PORT_RECEIVING | PORT_BUSY | PORT_RECEIVED);
-	//	if (PortHandle->inCursor != 0) {
-	//		PortHandle->Status |= PORT_RECEIVED_ALL;//PORT_RECEIVED; //? mb RECEIVED_TIMEOUT or RECEIVED_ALL? ALL better
-	//		PortHandle->Status clearBITS(PORT_ERROR);
-	//	}
-	//	else
-	//	{
-	//		//Port not received data;
-	//		PortHandle->Status setBITS(PORT_ERROR);
-	//		//PortHandle->RecvErrCnt++;
-	//	}
-	//	PortHandle->LenDataToRecv = PortHandle->inCursor;
-	//
-	//}
 	return res;
 }
 //#endif // IN_CASE_OF_FIFO_TYPE
@@ -319,8 +276,8 @@ int ReceivingTimerHandle(InterfacePortHandle_t* PortHandle)
 				//PortHandle->RecvErrCnt++;
 			}
 			PortHandle->LenDataToRecv = PortHandle->inCursor;
-			LINE_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
-			DEBUG_PRINTM(1, PortHandle->BufferRecved);
+			FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
+			HARDWARE_INTERFACE_LOG(0, PortHandle->BufferRecved);
 		}
 		if((res == -1) || (IsRecvTimerRinging)){
 			HWPort.clearOrResetSomeFlags = 0;
@@ -467,7 +424,7 @@ int immitationReceivingOfPortsBus(InterfacePortHandle_t* outPortHandle)
 			memcpy(HWPort.FIFO_BUFFER, &buffer[strlen(mastersMessageId)], sizeof(HWPort.FIFO_BUFFER));
 #endif // SLAVE_PORT_PROJECT
 		}
-		Called_RXInterrupt(&InterfacePort);
+		ReceiveInterrupt(&InterfacePort);
 	}
 	else { //?
 		res = (int)fres;
@@ -488,7 +445,7 @@ void TransmitInterrupt(void *arg)
 	return;
 }
 
-void Called_RXInterrupt(void* arg) //ReceiveInterrupt()
+void ReceiveInterrupt(void* arg) //ReceiveInterrupt()
 {
 	InterfacePortHandle_t* Port = (InterfacePortHandle_t*)arg;
 	if ((Port->Status & (PORT_READY | PORT_RECEIVING)) == ONLY (PORT_READY | PORT_RECEIVING)) {
@@ -508,7 +465,7 @@ static int PortSendSimulation(InterfacePortHandle_t *PortHandle, uint8_t BUFFER)
 	ifsPtr = osPoolAlloc(mpool);
 	ifsPtr->Port = PortHandle;
 	ifsPtr->BUFFER = BUFFER;
-	osMessagePut(MsgBox, (uint32_t /*not 64 bit in VS//?*/)ifsPtr, 0/*osWaitForever*/);
+	osMessagePut(MsgBox, (uint32_t /*not 64 bit in VS//?*/)ifsPtr, 10/*osWaitForever*/);
 	if (ifsPtr == NULL)
 		res = -1;
 #endif // !CMSIS_OS_ENABLE

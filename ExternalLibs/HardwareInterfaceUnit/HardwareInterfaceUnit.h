@@ -108,6 +108,10 @@ typedef struct {
 	uint8_t BUFFER; //Hardware 8bit BUFFER Case
 	InterfacePortHandle_t* Port;
 }portsBuffer_t;
+#include "../debug_print.h"
+#define HARDWARE_INTERFACE_LOG(e, s) DEBUG_PRINTM(e,s)
+#else
+#define HARDWARE_INTERFACE_LOG(e, s)
 #endif // !DEBUG_ON_VS && CMSIS_OS_ENABLE
 
 //extern InterfacePortHandle_t InterfacePort; //InterfacePort[ALL_CHANNELS] //InterfacePort[PORT0];
@@ -120,7 +124,7 @@ int SendingTimerHandle(InterfacePortHandle_t *Port);
 int ReceivingHandle(InterfacePortHandle_t* Port);
 int ReceivingTimerHandle(InterfacePortHandle_t* PortHandle);
 void TransmitInterrupt(void* arg); //Call_TXInterrupt()
-void Called_RXInterrupt(void* arg); //void ReceiveInterrupt(void* arg);
+void ReceiveInterrupt(void* arg); //void ReceiveInterrupt(void* arg);
 //int SentInterrupt(void); //End of transmit callback
 int immitationReceivingOfPortsBus(InterfacePortHandle_t* outPortHandle);
 #ifdef GLOB_MUTEX_FILE
