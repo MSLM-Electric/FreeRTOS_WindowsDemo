@@ -1295,7 +1295,6 @@ osEvent osMessageGet (osMessageQId queue_id, uint32_t millisec)
   
   return event;
 }
-
 #endif     /* Use Message Queues */
 
 /********************   Mail Queue Management Functions  ***********************/

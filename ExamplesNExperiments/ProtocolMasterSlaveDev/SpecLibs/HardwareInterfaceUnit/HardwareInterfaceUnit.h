@@ -1,7 +1,7 @@
 #ifndef HARDWARE_INTERFACE_UNIT_H
 #define HARDWARE_INTERFACE_UNIT_H
 #include <stdint.h>
-#include "../type_def.h"
+#include "../../../../ExternalLibs/type_def.h"
 //#include "../../Lib/fileHandle.h"
 //#include "../SimpleTimer/SimpleTimerWP.h"
 #include "../SpecLibs/SimpleTimerWP.h"
@@ -64,7 +64,8 @@ enum {
 	PORT_MASTER = 1 << 8,    //if zero, it is SLAVE (good approach//?)
 	PORT_BUFFER_FIFO = 1 << 9, //if zero, it is simple 8bit buffer //PORT_BUFF_FIFO_ENABLED
 	PORT_RECEIVED_ALL = 1 << 10,
-	PORT_ERROR = 1 << 11,
+	PORT_SENDED_ALL = 1 << 11,
+	PORT_ERROR = 1 << 12,
 	//PORT_USING_ON_BACKGND = 1 << 12, //?mb not needed!
 }InterfacePortState_e;
 
@@ -101,7 +102,7 @@ typedef struct {
 }InterfacePortHandle_t;
 
 #if defined(DEBUG_ON_VS) && defined(CMSIS_OS_ENABLE)
-#include "../cmsis_os/cmsis_os.h"
+#include "../../../../ExternalLibs/cmsis_os/cmsis_os.h"
 extern osPoolId mpool;
 extern osMessageQId MsgBox;
 typedef struct {

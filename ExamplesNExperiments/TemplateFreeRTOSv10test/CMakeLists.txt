@@ -56,7 +56,8 @@ set(HEADERS
     ${FREERTOS_INC}/projdefs.h
     ${FREERTOS_INC}/queue.h
     ${FREERTOS_INC}/semphr.h
-    ${FREERTOS_INC}/StackMacros.h
+    #${FREERTOS_INC}/StackMacros.h #v8.2.3
+    ${FREERTOS_INC}/stack_macros.h
     ${FREERTOS_INC}/task.h
     ${FREERTOS_INC}/timers.h
 

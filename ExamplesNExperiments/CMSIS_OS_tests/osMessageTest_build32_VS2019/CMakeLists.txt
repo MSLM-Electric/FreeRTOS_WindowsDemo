@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-set(PROJ_NAME ProtocolMasterSlaveDev)
+set(PROJ_NAME osMessageTest_build32)
 project(${PROJ_NAME})
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
@@ -9,7 +9,7 @@ set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 message("Start building project...")
 
-set(BACK_FROM_ROOT "../..")
+set(BACK_FROM_ROOT "../../..")
 set(FREERTOS_SRCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/FreeRTOSv10_Source")
 set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/${BACK_FROM_ROOT}/")
 
@@ -21,8 +21,7 @@ set(FREERTOS_PORTABLE "${FREERTOS_SRCS}/portable")
 set(FREERTOS_SUPPORT_FUNCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/Supporting_Functions")
 set(EXTERNAL_LIBS "${ROOT_PATH}/${BACK_FROM_ROOT}/ExternalLibs")
 set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
-set(SIMPLETIMER SpecLibs)
-set(HARDWAREINTERFACE_UNIT ${ROOT_PATH}/SpecLibs/HardwareInterfaceUnit)
+set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
 #set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
 if(CMSIS_OS_ENABLE_FLAG)
     set(CMSIS_OS ${ROOT_PATH}/cmsis_os_for_testing)
@@ -37,13 +36,13 @@ set(SOURCES
     ${FREERTOS_SRCS}/timers.c
     ${FREERTOS_SRCS}/croutine.c
 
+    #${FREERTOS_PORTABLE}/Common/mpu_wrappers.c
     ${FREERTOS_PORTABLE}/MemMang/heap_4.c
     ${FREERTOS_PORTABLE}/MSVC-MingW/port.c
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.c
 
     ${BITLOGGER}/BitLogger.c
     ${SIMPLETIMER}/SimpleTimerWP.c
-    ${HARDWAREINTERFACE_UNIT}/HardwareInterfaceUnit.c
     ${ROOT_PATH}/main.c
 )
 
@@ -54,7 +53,7 @@ set(HEADERS
     ${FREERTOS_INC}/FreeRTOS.h
     ${FREERTOS_INC}/portable.h
     ${FREERTOS_INC}/list.h
-    ${FREERTOS_INC}/mpu_wrappers.h
+    #${FREERTOS_INC}/mpu_wrappers.h
     ${FREERTOS_INC}/projdefs.h
     ${FREERTOS_INC}/queue.h
     ${FREERTOS_INC}/semphr.h
@@ -71,9 +70,9 @@ set(HEADERS
     ${EXTERNAL_LIBS}/type_def.h
     ${BITLOGGER}/BitLogger.h
     ${SIMPLETIMER}/SimpleTimerWP.h
-    ${HARDWAREINTERFACE_UNIT}/HardwareInterfaceUnit.h
 )
 add_definitions(-DFREERTOSCONFIG_RELATIVE_PATH="${ROOT_PATH}/FreeRTOSConfig.h")
+#add_definitions(-DportUSING_MPU_WRAPPERS)
 
 add_executable(${PROJ_NAME} ${SOURCES} ${HEADERS})
 

@@ -112,7 +112,7 @@ static uint32_t waitTXingToSlaveByMaster  (void);
 static uint32_t waitRXingFromSlaveByMaster(void);
 static uint32_t waitTXingToMasterBySlave(void);
 
-#include "../../ExternalLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
+#include "SpecLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
 osPoolDef(mpool, 8, portsBuffer_t);
 extern osPoolId mpool;
 osMessageQDef(MsgBox, 8, portsBuffer_t);
@@ -201,8 +201,9 @@ void vMasterCoreImmit( void *pvParameters )
 	u8 putNumPos = 25;
 
 	InitMasterPort(&MasterPort);
-	MasterPort.communicationPeriod = 3000;
+	MasterPort.communicationPeriod = 1000;
 	MasterPort.Status setBITS(PORT_READY);
+	//MasterPort.ReceivingTimer.setVal = (U32_ms)100;
 	Timert_t CommunPeriod;
 	InitTimerWP(&CommunPeriod, NULL);
 	LaunchTimerWP(MasterPort.communicationPeriod, &CommunPeriod);
@@ -214,7 +215,7 @@ void vMasterCoreImmit( void *pvParameters )
 		PRINT_BACKGROUND_PROCESS(0, pcTaskName );
 
 		/* Delay for a period. */
-		vTaskDelay(50);
+		vTaskDelay(10);
 		if (IsTimerWPRinging(&CommunPeriod)) {
 			RestartTimerWP(&CommunPeriod);
 			sprintf(&msg[putNumPos], "%d\n", testVar);
@@ -223,6 +224,16 @@ void vMasterCoreImmit( void *pvParameters )
 			testVar++;
 		}
 		SendingTimerHandle(&MasterPort);
+		if ((MasterPort.Status & (PORT_BUSY | PORT_SENDED_ALL)) == ONLY PORT_SENDED_ALL) {
+			MasterPort.Status clearBITS(PORT_SENDED_ALL);
+			memset(MasterPort.BufferRecved, 0, sizeof(MasterPort.BufferRecved));
+			Recv(&MasterPort, buffer, sizeof(buffer));
+		}
+		ReceivingTimerHandle(&MasterPort);
+		if (MasterPort.Status & PORT_RECEIVED_ALL) {
+			DEBUG_PRINTM(1, MasterPort.BufferRecved);
+			MasterPort.Status clearBITS(PORT_RECEIVED_ALL);
+		}
 	}
 }
 /*-----------------------------------------------------------*/
@@ -242,7 +253,7 @@ void vSlaveCoreImmit(void* pvParameters)
 		PRINT_BACKGROUND_PROCESS(0, pcTaskName);
 		
 		/* Delay for a period. */
-		vTaskDelay(2);
+		vTaskDelay(10);
 		if (NOT (SlavePort.Status & PORT_BUSY)) {
 			memset(SlavePort.BufferRecved, 0, sizeof(SlavePort.BufferRecved));
 			Recv(&SlavePort, buffer, sizeof(buffer));
@@ -250,7 +261,7 @@ void vSlaveCoreImmit(void* pvParameters)
 		ReceivingTimerHandle(&SlavePort);
 		if (SlavePort.Status & PORT_RECEIVED_ALL) {
 			DEBUG_PRINTM(1, SlavePort.BufferRecved);
-			//Write(&SlavePort, "Slave've got your msg!\n", 24);  //? PortSendSimualtion() calls Access violation
+			Write(&SlavePort, "Slave've got your msg!\n", 24);  //? PortSendSimualtion() calls Access violation
 		}
 	}
 }
@@ -265,7 +276,9 @@ static uint32_t waitRXing/*FromMasterBySlave*/(void)
 		event = osMessageGet(MsgBox, osWaitForever);
 		if (event.status == osEventMessage) {
 			ifsPort = event.value.p;
+#if defined(_M_X64)
 			if ((uint64_t)event.value.p & (uint64_t)MsgBox & 0xFFFFFFFF00000000) {
+#endif
 				if (ifsPort->Port == &MasterPort) {
 					//SlaveRXinterruption()
 					osPoolFree(mpool, ifsPort);
@@ -281,7 +294,9 @@ static uint32_t waitRXing/*FromMasterBySlave*/(void)
 					/*I've got from slave then Slave transmitted*/
 					osSignalSet(/*SlaveTXinterrupt()*/xSlaveTXsignal, 0x0002);
 				}
+#if defined(_Mx64)
 			}
+#endif
 		}
 	}
 }

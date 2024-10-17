@@ -1041,7 +1041,7 @@ void *osPoolAlloc (osPoolId pool_id)
     if (pool_id->markers[index] == 0) {
       pool_id->markers[index] = 1;
       p = (void *)((
-#if defined(DEBUG_ON_VS) //&& defined(_M_X64)
+#if defined(DEBUG_ON_VS) && defined(_M_X64)
           uint64_t /*64bit environments*/
 #else
           uint32_t /*//!uint32_t for not VS environments or for 32bit env*/
@@ -1295,7 +1295,6 @@ osEvent osMessageGet (osMessageQId queue_id, uint32_t millisec)
   
   return event;
 }
-
 #endif     /* Use Message Queues */
 
 /********************   Mail Queue Management Functions  ***********************/

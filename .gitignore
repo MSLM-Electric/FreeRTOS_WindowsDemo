@@ -4,6 +4,7 @@
 *.vcxproj
 .vs
 build
+build32
 Debug
 TempRsrv
 ExamplesNExperiments/TaskExecuteLogger
@@ -11,6 +12,7 @@ ExamplesNExperiments/packet_improvement_test
 ExamplesNExperiments/packet_task_test
 ExamplesNExperiments/Lwip_memhandling
 ExamplesNExperiments/sntp_tests
+ExamokesNExperiments/Manch
 !*.c
 !*.h
 !*.json

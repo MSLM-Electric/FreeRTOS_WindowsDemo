@@ -33,8 +33,8 @@ static int InitPort(InterfacePortHandle_t* PortHandle)
 	PortHandle->Status = 0;
 	InitTimerWP(&PortHandle->ReceivingTimer, (tickptr_fn*)GetTickCount);
 	InitTimerWP(&PortHandle->SendingTimer, (tickptr_fn*)GetTickCount);
-	PortHandle->ReceivingTimer.setVal = (U32_ms)600; //Default 200ms
-	PortHandle->SendingTimer.setVal = (U32_ms)600; //def
+	PortHandle->ReceivingTimer.setVal = (U32_ms)200; //Default 200ms
+	PortHandle->SendingTimer.setVal = (U32_ms)200; //def
 	return res;
 }
 
@@ -73,7 +73,7 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 		HWPort.StartTX = 1;
 		PortHandle->Status |= PORT_BUSY;
 		PortHandle->Status |= PORT_SENDING;
-		PortHandle->Status clearBITS(PORT_SENDED | PORT_RECEIVED | PORT_RECEIVING | PORT_RECEIVED_ALL/*//?mb all not needed here*/);
+		PortHandle->Status clearBITS(PORT_SENDED | PORT_SENDED_ALL | PORT_RECEIVED | PORT_RECEIVING | PORT_RECEIVED_ALL/*//?mb all not needed here*/);
 		LaunchTimerWP(PortHandle->SendingTimer.setVal, &PortHandle->SendingTimer);
 		/*Simulation part*/
 		//res = immitationOfPortsBus(PortHandle);
@@ -92,6 +92,7 @@ int Write(InterfacePortHandle_t* PortHandle, const uint8_t *inDatas, const int s
 		HWPort.TXInterruptEnable = 0;
 		HWPort.someSettings = 0xFF;
 		HWPort.BUFFER = 0;
+		PortHandle->Status setBITS(PORT_SENDED_ALL);
 		PortHandle->Status clearBITS(PORT_SENDING_LAST_BYTE | PORT_SENDING | PORT_BUSY);
 		PortHandle->outCursor = 0;
 		StopTimerWP(&PortHandle->SendingTimer);
@@ -140,7 +141,7 @@ int Recv(InterfacePortHandle_t* PortHandle, uint8_t *outBuff, const int maxPossi
 #endif // !ENABLE_DELAYED_RECV
 		PortHandle->LenDataToRecv = maxPossibleSize;
 		PortHandle->inCursor = 0;
-		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/1);
+		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_TIMER*/0);
 		RestartTimerWP(&PortHandle->ReceivingTimer);
 		PortHandle->Status setBITS(PORT_BUSY | PORT_RECEIVING);
 		PortHandle->Status clearBITS(PORT_RECEIVED | PORT_RECEIVED_ALL);
@@ -208,23 +209,22 @@ int SendingTimerHandle(InterfacePortHandle_t *Port) //!!<---  IsTimerWPStarted()
 	u8 IsSendingTimerRinging = IsTimerWPRinging(&Port->SendingTimer);
 	if ((Port->Status & (PORT_BUSY | PORT_SENDING)) == ONLY(PORT_BUSY | STILL PORT_SENDING)) {
 		if (NOT IsTimerWPStarted(&Port->SendingTimer)) {
-			Port->errCnt++;
-			Port->Status setBITS(PORT_ERROR);
 			DEBUG_PRINTF(1, ("Send timer not started even!\n"));
-			Port->Status clearBITS(PORT_BUSY | PORT_SENDING | PORT_SENDED | PORT_SENDING_LAST_BYTE);
+			Port->Status clearBITS(PORT_BUSY | PORT_SENDING | PORT_SENDED | PORT_SENDING_LAST_BYTE | PORT_SENDED_ALL);
 			res = -1;
 		}
 		else if (IsSendingTimerRinging) {
 			StopTimerWP(&Port->SendingTimer);
-			Port->errCnt++;
 			DEBUG_PRINTF(1, ("Sending timeout occured!\n"));
 			//Error occur. Successfull sending should not reach Sending timeout! If SendingTimer Ringed then:
 			//Port->Status setBITS(PORT_ERROR);
 			//Port->sendErrCnt;
-			Port->Status clearBITS(PORT_SENDING_LAST_BYTE | PORT_SENDING | PORT_BUSY);
+			Port->Status clearBITS(PORT_SENDING_LAST_BYTE | PORT_SENDING | PORT_BUSY | PORT_SENDED_ALL);
 			res = -1;
 		}
 		if(res == -1){
+			Port->errCnt++;
+			Port->Status setBITS(PORT_ERROR);
 			HWPort.clearOrResetSomeFlags = 0;
 			HWPort.TXInterruptEnable = 0;
 #ifdef IN_CASE_OF_FIFO_TYPE
