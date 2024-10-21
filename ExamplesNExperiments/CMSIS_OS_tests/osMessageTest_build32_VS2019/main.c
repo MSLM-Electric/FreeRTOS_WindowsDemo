@@ -99,17 +99,20 @@ osThreadId tid_thread1;                          // ID for thread 1
 osThreadId tid_thread2;                          // for thread 2
 
 typedef struct /*MCU_PACK*/{                                 // Message object structure
-	uint32_t/*float*/    voltage;                              // AD result of measured voltage
-	uint32_t/*float*/    current;                              // AD result of measured current
+	uint32_t/*float and*//*uint32_t gets error*/    voltage;                              // AD result of measured voltage
+	uint32_t/*float*//**/    current;                              // AD result of measured current
 	uint32_t      counter;                              // A counter value
+	//uint8_t justtest;
 }/*END_MCU_PACK*/ T_MEAS;
+//when sizoef(T_MEAS) == 8bytes all is stable! (when the sizeof is more than 8 bytes the osMessagePut() crashes)
+//? but when it is == 12bytes it crushes the VS RTC
 
 //typedef uint32_t T_MEAS;
 
-osPoolDef(mpool, 4, T_MEAS);                    // Define memory pool
-osPoolId  mpool;
-osMessageQDef(MsgBox, 4, T_MEAS);              // Define message queue
-osMessageQId  MsgBox;
+osPoolDef(mpool, 12, T_MEAS);                    // Define memory pool
+static osPoolId  mpool;
+osMessageQDef(MsgBox, 12, T_MEAS);              // Define message queue
+static osMessageQId  MsgBox;
 osMutexDef(MutexP);
 osMutexId MutexP;
 
@@ -127,18 +130,20 @@ int main(int argc, char** argv)
 		to do this is dependent on the FreeRTOS port being used.  The syntax
 		shown here can only be used with the FreeRTOS Windows port, where such
 		interrupts are only simulated. */
-	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, ulExampleInterruptHandler);
-	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerInterruptHandler);
+	vPortSetInterruptHandler(mainINTERRUPT_NUMBER, (void*)ulExampleInterruptHandler);
+	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, (void*)ulTimerInterruptHandler);
 
 	mpool = osPoolCreate(osPool(mpool));                 // create memory pool
 	MsgBox = osMessageCreate(osMessageQ(MsgBox), NULL);  // create msg queue
 	MutexP = osMutexCreate(osMutex(MutexP));
 	osMutexRelease(MutexP);
 
-	osThreadDef(send, send_thread, osPriorityNormal, 1, 400);
-	osThreadDef(recv, recv_thread, osPriorityNormal, 1, 2000);
-	tid_thread1 = osThreadCreate(osThread(send), NULL);
-	tid_thread2 = osThreadCreate(osThread(recv), NULL);
+	//osThreadDef(send, send_thread, osPriorityNormal, 1, 400);
+	//osThreadDef(recv, recv_thread, osPriorityNormal, 1, 2000);
+	//tid_thread1 = osThreadCreate(osThread(send), NULL);
+	//tid_thread2 = osThreadCreate(osThread(recv), NULL);
+	xTaskCreate(send_thread, "snd", 2000, NULL, 1, NULL);
+	xTaskCreate(recv_thread, "rcv", 2000, NULL, 1, NULL);
 
 	/* Start the scheduler to start the tasks executing. */
 	vTaskStartScheduler();
@@ -169,14 +174,14 @@ static void send_thread(void const* argument) {
 		osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever);  // Send Message
 		osDelay(100);
 
-		//osMutexWait(MutexP, portMAX_DELAY);
-		//mptr = osPoolAlloc(mpool);                     // Allocate memory for the message
-		//osMutexRelease(MutexP);
-		////*mptr = 33;
-		//mptr->voltage = 227;// .23;                        // Prepare a 2nd message
-		//mptr->current = 12;// .41;
-		//mptr->counter = 170823;
-		//osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever);  // Send Message
+		osMutexWait(MutexP, portMAX_DELAY);
+		mptr = osPoolAlloc(mpool);                     // Allocate memory for the message
+		osMutexRelease(MutexP);
+		//*mptr = 33;
+		mptr->voltage = 227;// .23;                        // Prepare a 2nd message
+		mptr->current = 12;// .41;
+		mptr->counter = 170823;
+		osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever);  // Send Message
 	}
 	//osThreadYield();                               // Cooperative multitasking
 												   // We are done here, exit this thread

@@ -12,7 +12,7 @@ ExamplesNExperiments/packet_improvement_test
 ExamplesNExperiments/packet_task_test
 ExamplesNExperiments/Lwip_memhandling
 ExamplesNExperiments/sntp_tests
-ExamokesNExperiments/Manch
+ExamplesNExperiments/Manch
 !*.c
 !*.h
 !*.json

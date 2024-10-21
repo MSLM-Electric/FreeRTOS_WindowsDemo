@@ -29,10 +29,13 @@ static int InitPort(InterfacePortHandle_t* PortHandle)
 	int res = 0;
 #ifndef MINIMAL_CODESIZE
 	InitStopWatchGroup(timeMeasure, (tickptr_fn*)GetTickCount, sizeof(timeMeasure) / sizeof(stopwatchwp_t));
-#endif // !MINIMAL_CODESIZE
-	PortHandle->Status = 0;
 	InitTimerWP(&PortHandle->ReceivingTimer, (tickptr_fn*)GetTickCount);
 	InitTimerWP(&PortHandle->SendingTimer, (tickptr_fn*)GetTickCount);
+#else
+	InitTimerWP(&PortHandle->ReceivingTimer, NULL);
+	InitTimerWP(&PortHandle->SendingTimer, NULL);
+#endif // !MINIMAL_CODESIZE
+	PortHandle->Status = 0;
 	PortHandle->ReceivingTimer.setVal = (U32_ms)200; //Default 200ms
 	PortHandle->SendingTimer.setVal = (U32_ms)200; //def
 	return res;
