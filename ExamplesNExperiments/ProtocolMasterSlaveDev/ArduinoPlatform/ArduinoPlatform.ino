@@ -44,19 +44,13 @@ ISR(TIMER1_OVF_vect)
 // Interrupt on receive
 ISR (USART_RXC_vect)
 {
-   char ReceivedByte;
-   ReceivedByte = UDR0; // Fetch the received byte value into the variable "ByteReceived"
-   //if((UCSR0A & (1 << RXC)) > 0) // Do nothing until data have been received and is ready to be read from UDR
-      //ReceivedByte = UDR; // Fetch the received byte value into the variable "ByteReceived"
-    
-   if((UCSR0A & (1 << UDRE0)) > 0) // Do nothing until UDR is ready for more data to be written to it
-      UDR0 = ReceivedByte; // Echo back the received byte back to the computer
+  ReceiveInterrupt(&SlavePort);
 }
 
 // Interrupt on Transmit
 ISR (USART_TXC_vect)
 {
-  
+  TransmitInterrupt(&SlavePort);
 }
 
 static uint32_t getTickValue()

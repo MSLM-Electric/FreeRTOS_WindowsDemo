@@ -18,10 +18,13 @@ extern HANDLE SocketMutex;
 #if defined(DEBUG_ON_VS) && defined(CMSIS_OS_ENABLE)
 osPoolId mpool;
 osMessageQId MsgBox;
+#else
+HardwarePort_t HWPort; //!?
 #endif // !DEBUG_ON_VS && CMSIS_OS_ENABLE
 
 #include "uart.h"
 
+static int PortSend(InterfacePortHandle_t* PortHandle, uint8_t BUFFER);
 static void ErrorPortSendingHandle(InterfacePortHandle_t *Port);
 
 char mastersMessageId[] = MASTER_MESSAGE_ID;
@@ -351,8 +354,8 @@ static void ErrorPortSendingHandle(InterfacePortHandle_t *Port)
 	StopTimerWP(&Port->SendingTimer);
 }
 
-#define DISABLE_PORTSIMMITATIONS
-#ifndef DISABLE_PORTSIMMITATIONS
+#define DISABLE_PORTSIMMITATIONS_BY_UDPIP
+#ifndef DISABLE_PORTSIMMITATIONS_BY_UDPIP
 static int immitationOfPortsBus(InterfacePortHandle_t* PortHandle) //! immitationSendingOfPortsBus()
 {
 	int res = 0;
@@ -473,7 +476,7 @@ int immitationReceivingOfPortsBus(InterfacePortHandle_t* outPortHandle)
 	}
 	return res;
 }
-#endif // !DISABLE_PORTSIMMITATIONS
+#endif // !DISABLE_PORTSIMMITATIONS_BY_UDPIP
 
 void TransmitInterrupt(void *arg) 
 {
@@ -510,6 +513,7 @@ static int PortSend(InterfacePortHandle_t *PortHandle, uint8_t BUFFER)
 	if (ifsPtr == NULL)
 		res = -1;
 #else
+	UNUSED(PortHandle);
 	res = USART_Transmit(BUFFER);
 #endif // !CMSIS_OS_ENABLE
 	return res;
