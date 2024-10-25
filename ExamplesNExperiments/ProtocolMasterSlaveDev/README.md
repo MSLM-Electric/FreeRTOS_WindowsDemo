@@ -4,20 +4,20 @@ The main used libs should be also compatible for Arduino platforms!
 
 Initially to launch the project build it once! To do it follow the next steps:
 
-x64 (for using on 64bit platform):
-```
-mkdir build
-cd build
-cmake ..
-```
-
-OR
-
-x86 (for using on 32bit):
+x86 (for using on 32bit): (32bit build highly recommended! CMSIS OS API/osMutex/osMessage/osPool/osMail worx good!)
 ```
 mkdir build32
 cd build32
 cmake -G "Visual Studio 15 2017" ..
 cd ..
 #cmake --build build32 --config Release  #for exporting the .exe
+```
+
+OR
+
+x64 (for using on 64bit platform):
+```
+mkdir build
+cd build
+cmake ..
 ```

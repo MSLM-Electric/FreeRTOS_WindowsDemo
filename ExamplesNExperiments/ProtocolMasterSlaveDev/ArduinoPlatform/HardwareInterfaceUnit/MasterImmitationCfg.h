@@ -21,5 +21,5 @@ typedef struct {
 	uint32_t currentIOfileLine;
 }commonMasterSlaveCfgs_t;*/
 
-thisMastercfgs_t ThisMastersConfigs;
+extern thisMastercfgs_t ThisMastersConfigs;
 #endif //_MASTERIMMITATIONCFG_H_

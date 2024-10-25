@@ -16,6 +16,7 @@ ExamplesNExperiments/Manch
 !*.c
 !*.cpp
 !*.h
+!*.ino
 !*.json
 !*.gitignore
 !*.txt

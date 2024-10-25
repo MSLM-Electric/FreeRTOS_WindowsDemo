@@ -20,5 +20,5 @@ typedef struct {
 	uint32_t currentIOfileLine;
 }commonMasterSlaveCfgs_t;*/
 
-thisSlavecfgs_t ThisSlavesConfigs;
+extern thisSlavecfgs_t ThisSlavesConfigs;
 #endif //_SLAVEIMMITATIONCFG_H_

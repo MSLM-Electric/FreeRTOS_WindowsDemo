@@ -142,7 +142,7 @@ typedef struct {
 	u16 accumulatedStats[ACCUMUL_CAPACITY];
 	u16 accumArrayPos;
 }tracePortCfg_t;
-tracePortCfg_t PortTracer;
+//tracePortCfg_t PortTracer;
 void tracePortInit(tracePortCfg_t* traceP);
 void tracePort(InterfacePortHandle_t* Port, tracePortCfg_t* traceP);
 void ShowTracedAccumulations(tracePortCfg_t* traceP);
