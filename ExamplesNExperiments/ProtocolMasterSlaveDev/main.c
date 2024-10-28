@@ -301,31 +301,6 @@ static uint32_t waitRXing/*FromMasterBySlave*/(void)
 	}
 }
 
-static uint32_t waitRXingFromSlaveByMaster(void)
-{
-	//Init
-	portsBuffer_t* ifsPort;
-	osEvent event;
-
-	for (;;) {
-		event = osMessageGet(MsgBox, osWaitForever);
-		if (event.status == osEventMessage) {
-			ifsPort = event.value.p;
-			if ((uint64_t)event.value.p & (uint64_t)MsgBox & 0xFFFFFFFF00000000) {
-				if (ifsPort->Port == &SlavePort) {
-					//MasterRXinterruption()
-					osPoolFree(mpool, ifsPort);
-					HWPortN[MASTERNO].BUFFER = ifsPort->BUFFER;
-					ReceiveInterrupt(&MasterPort);
-					//osDelay(10);
-					/*I've got from slave then Slave transmitted*/
-					osSignalSet(/*SlaveTXinterrupt()*/xSlaveTXsignal, 0x0002);
-				}
-			}
-		}
-	}
-}
-
 static uint32_t waitTXingToSlaveByMaster(void)
 {
 	//portsBuffer_t* ifsPort;
@@ -356,6 +331,31 @@ static uint32_t waitTXingToMasterBySlave(void)
 	}
 }
 
+/*Not used and not created task!*/
+static uint32_t waitRXingFromSlaveByMaster(void)
+{
+	//Init
+	portsBuffer_t* ifsPort;
+	osEvent event;
+
+	for (;;) {
+		event = osMessageGet(MsgBox, osWaitForever);
+		if (event.status == osEventMessage) {
+			ifsPort = event.value.p;
+			if ((uint64_t)event.value.p & (uint64_t)MsgBox & 0xFFFFFFFF00000000) {
+				if (ifsPort->Port == &SlavePort) {
+					//MasterRXinterruption()
+					osPoolFree(mpool, ifsPort);
+					HWPortN[MASTERNO].BUFFER = ifsPort->BUFFER;
+					ReceiveInterrupt(&MasterPort);
+					//osDelay(10);
+					/*I've got from slave then Slave transmitted*/
+					osSignalSet(/*SlaveTXinterrupt()*/xSlaveTXsignal, 0x0002);
+				}
+			}
+		}
+	}
+}
 
 /*-----------------------------------------------------------*/
 

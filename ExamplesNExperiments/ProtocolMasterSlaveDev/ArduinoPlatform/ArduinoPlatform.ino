@@ -3,9 +3,6 @@
 #include <SimpleTimerWP.h>
 #include <HardwareInterfaceUnit.h>
 
-#define USART_BAUDRATE 9600
-#define MYUBRR (((F_CPU / (USART_BAUDRATE * 16UL))) - 1)
-
 //Discrete inputs
 #define DI1 4    //1
 #define DI2 2    //2
@@ -29,8 +26,10 @@ extern uint32_t someExternalTick;
 static uint32_t getTickValue(void);
 InterfacePortHandle_t SlavePort;
 //extern "C" int InitMasterPort(InterfacePortHandle_t *PortHandle);
+uint8_t buffer[200];
 
 Timert_t Timer1s;
+Timert_t Timer10ms;
 //Timer_t Timer1sAnothP;
 
 ISR(TIMER1_OVF_vect)
@@ -44,12 +43,14 @@ ISR(TIMER1_OVF_vect)
 // Interrupt on receive
 ISR (USART_RXC_vect)
 {
+  //Serial.println("Recv INT");
   ReceiveInterrupt(&SlavePort);
 }
 
 // Interrupt on Transmit
 ISR (USART_TXC_vect)
 {
+  //Serial.println("Transmit INT");
   TransmitInterrupt(&SlavePort);
 }
 
@@ -67,19 +68,19 @@ void setup() {
   TCNT1 = 65535-250;//40535;        // Timer Preloading
   TIMSK1 |= B00000001;  // Enable Timer Overflow Interrupt
 
-  /*USART configs*/
-  UCSR0B = (1 << RXEN0) | (1 << TXEN0);   // Turn on the transmission and reception circuitry
-  UCSR0C = (1 << UCSZ00) | (1 << UCSZ01); // Use 8-bit character sizes
+//  /*USART configs*/
+//  UCSR0B = (1 << RXEN0) | (1 << TXEN0);   // Turn on the transmission and reception circuitry
+//  UCSR0C = (1 << UCSZ00) | (1 << UCSZ01); // Use 8-bit character sizes
+//  
+//  UBRR0H = (MYUBRR >> 8); // Load upper 8-bits of the baud rate value into the high byte of the UBRR register
+//  UBRR0L = MYUBRR; // Load lower 8-bits of the baud rate value into the low byte of the UBRR register
   
-  UBRR0H = (MYUBRR >> 8); // Load upper 8-bits of the baud rate value into the high byte of the UBRR register
-  UBRR0L = MYUBRR; // Load lower 8-bits of the baud rate value into the low byte of the UBRR register
-  
-  UCSR0B |= (1 << RXCIE0) | (1 << TXCIE0); // Enable the USART Receive Complete interrupt (USART_RXC)
+  //UCSR0B |= (1 << RXCIE0) | (1 << TXCIE0); // Enable the USART Receive Complete interrupt (USART_RXC)
   
   sei(); // Enable the Global Interrupt Enable flag so that interrupts can be processed
 
   
-  Serial.begin(9600);
+  //Serial.begin(9600);
   pinMode(DI1, INPUT);
   pinMode(DI2, INPUT);
   pinMode(DI3, INPUT);
@@ -93,16 +94,40 @@ void setup() {
   pinMode(PWMQ3, OUTPUT);
   pinMode(PWMQ4, OUTPUT);  
   InitSlavePort(&SlavePort);
+  SlavePort.Status setBITS(PORT_READY);
   InitTimerWP(&Timer1s, NULL);
   LaunchTimerWP(1000, &Timer1s);
-  Serial.println("Begin programm");
+  InitTimerWP(&Timer10ms, NULL);
+  LaunchTimerWP((U32_ms)10, &Timer10ms); 
+  //Serial.println("Begin programm");
 }
 
 void loop() {                         
-  if(IsTimerWPRinging(&Timer1s)){
-    RestartTimerWP(&Timer1s);
-    Serial.println(someExternalTick);
-    Serial.println(testVar);
+//  if(IsTimerWPRinging(&Timer1s)){
+//    RestartTimerWP(&Timer1s);
+//    Serial.println(someExternalTick);
+//    //Serial.println(testVar);
+//  }
+  if(IsTimerWPRinging(&Timer10ms)){
+    RestartTimerWP(&Timer10ms);
+    if (NOT (SlavePort.Status & PORT_BUSY)) {
+      //Serial.begin(9600);
+      //Serial.println(someExternalTick);
+      //Serial.end();
+      //InitSlavePort(&SlavePort);
+      memset(SlavePort.BufferRecved, 0, sizeof(SlavePort.BufferRecved));
+      Recv(&SlavePort, buffer, sizeof(buffer));
+    }
+    ReceivingTimerHandle(&SlavePort);
+    if (SlavePort.Status & PORT_RECEIVED_ALL) {
+      //DEBUG_PRINTM(1, SlavePort.BufferRecved);
+      //Serial.begin(9600);
+      //Serial.println((char *)SlavePort.BufferRecved);
+      //Serial.println("Recved all section!");
+      //Serial.end();
+      //InitSlavePort(&SlavePort);
+      Write(&SlavePort, "Slave've got your msg!\n", 24);  //? PortSendSimualtion() calls Access violation
+    }
   }
-  testVar++;
+  //testVar++;
 }
