@@ -1,67 +1,67 @@
 /*
-    FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
-    All rights reserved
+	FreeRTOS V8.2.3 - Copyright (C) 2015 Real Time Engineers Ltd.
+	All rights reserved
 
-    VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
+	VISIT http://www.FreeRTOS.org TO ENSURE YOU ARE USING THE LATEST VERSION.
 
-    This file is part of the FreeRTOS distribution.
+	This file is part of the FreeRTOS distribution.
 
-    FreeRTOS is free software; you can redistribute it and/or modify it under
-    the terms of the GNU General Public License (version 2) as published by the
-    Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
+	FreeRTOS is free software; you can redistribute it and/or modify it under
+	the terms of the GNU General Public License (version 2) as published by the
+	Free Software Foundation >>!AND MODIFIED BY!<< the FreeRTOS exception.
 
-    ***************************************************************************
-    >>!   NOTE: The modification to the GPL is included to allow you to     !<<
-    >>!   distribute a combined work that includes FreeRTOS without being   !<<
-    >>!   obliged to provide the source code for proprietary components     !<<
-    >>!   outside of the FreeRTOS kernel.                                   !<<
-    ***************************************************************************
+	***************************************************************************
+	>>!   NOTE: The modification to the GPL is included to allow you to     !<<
+	>>!   distribute a combined work that includes FreeRTOS without being   !<<
+	>>!   obliged to provide the source code for proprietary components     !<<
+	>>!   outside of the FreeRTOS kernel.                                   !<<
+	***************************************************************************
 
-    FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
-    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-    FOR A PARTICULAR PURPOSE.  Full license text is available on the following
-    link: http://www.freertos.org/a00114.html
+	FreeRTOS is distributed in the hope that it will be useful, but WITHOUT ANY
+	WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+	FOR A PARTICULAR PURPOSE.  Full license text is available on the following
+	link: http://www.freertos.org/a00114.html
 
-    http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
-    the FAQ page "My application does not run, what could be wrong?".  Have you
-    defined configASSERT()?
+	http://www.FreeRTOS.org/FAQHelp.html - Having a problem?  Start by reading
+	the FAQ page "My application does not run, what could be wrong?".  Have you
+	defined configASSERT()?
 
-    http://www.FreeRTOS.org/support - In return for receiving this top quality
-    embedded software for free we request you assist our global community by
-    participating in the support forum.
+	http://www.FreeRTOS.org/support - In return for receiving this top quality
+	embedded software for free we request you assist our global community by
+	participating in the support forum.
 
-    http://www.FreeRTOS.org/training - Investing in training allows your team to
-    be as productive as possible as early as possible.  Now you can receive
-    FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
-    Ltd, and the world's leading authority on the world's leading RTOS.
+	http://www.FreeRTOS.org/training - Investing in training allows your team to
+	be as productive as possible as early as possible.  Now you can receive
+	FreeRTOS training directly from Richard Barry, CEO of Real Time Engineers
+	Ltd, and the world's leading authority on the world's leading RTOS.
 
-    http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
-    including FreeRTOS+Trace - an indispensable productivity tool, a DOS
-    compatible FAT file system, and our tiny thread aware UDP/IP stack.
+	http://www.FreeRTOS.org/plus - A selection of FreeRTOS ecosystem products,
+	including FreeRTOS+Trace - an indispensable productivity tool, a DOS
+	compatible FAT file system, and our tiny thread aware UDP/IP stack.
 
-    http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
-    Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
+	http://www.FreeRTOS.org/labs - Where new FreeRTOS products go to incubate.
+	Come and try FreeRTOS+TCP, our new open source TCP/IP stack for FreeRTOS.
 
-    http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
-    Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
-    licenses offer ticketed support, indemnification and commercial middleware.
+	http://www.OpenRTOS.com - Real Time Engineers ltd. license FreeRTOS to High
+	Integrity Systems ltd. to sell under the OpenRTOS brand.  Low cost OpenRTOS
+	licenses offer ticketed support, indemnification and commercial middleware.
 
-    http://www.SafeRTOS.com - High Integrity Systems also provide a safety
-    engineered and independently SIL3 certified version for use in safety and
-    mission critical applications that require provable dependability.
+	http://www.SafeRTOS.com - High Integrity Systems also provide a safety
+	engineered and independently SIL3 certified version for use in safety and
+	mission critical applications that require provable dependability.
 
-    1 tab == 4 spaces!
+	1 tab == 4 spaces!
 */
 
 /* FreeRTOS.org includes. */
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/FreeRTOS.h"
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/task.h"
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/timers.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/FreeRTOS.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/task.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/timers.h"
 
 /* Demo includes. */
 #include "../../Win32-simulator-MSVC/Supporting_Functions/supporting_functions.h"
 
-#include "../../ExternalLibs/cmsis_os/cmsis_os.h"
+#include "../../ExternalLibs/cmsis_os_for_testing/cmsis_os.h"
 #include "../../ExternalLibs/BitLogger/BitLogger.h"
 #include "../../ExternalLibs/SimpleTimer/SimpleTimerWP.h"
 #include "../../ExternalLibs/type_def.h"
@@ -81,7 +81,7 @@ to the application. */
 #define PERIODIC_TIMER 1
 
 /* The task functions. */
-void vSomeAnotherTask( void *pvParameters );
+void vSomeAnotherTask(void* pvParameters);
 void HardwareTimerInterruption_Immitate(void* pvParameters);
 void xPortSysTickHandler(void);
 #ifndef CMSIS_OS_ENABLE
@@ -99,53 +99,17 @@ that the task will be synchronized with. */
 static uint32_t ulExampleInterruptHandler(void);
 static uint32_t ulTimerInterruptHandler(void);
 
-typedef struct MCU_PACK {
-	const char* location;
-	u16 channel;
-	int		client_node_id;
-	u8		slave_id;
-	//iotype_t	req_type;
-	u8		mb_function;
-	u16		address;
-	u16		count;
-	int		retries;
-	u8		error_code; // modbus error code (if any) of current request
-	int		prev_error; // error code of the last printed error message (0 when no error) 
-	u32 resp_timeout;
-	// buffer used to store located PLC variables
-	u16* plcv_buffer;
-	// buffer used to store data coming from / going to server
-	u16* coms_buffer;
-} client_request_t;
-
-#define NUMBER_OF_TCPCLIENT_REQTS 3
-#define NUMBER_OF_CLIENT_REQTS 5
-
-client_request_t	client_requests[NUMBER_OF_CLIENT_REQTS];
-
-#define CONVERT_NODE_INDEX_TO_NUM(x) x>0?client_requests[(NUMBER_OF_CLIENT_REQTS-NUMBER_OF_TCPCLIENT_REQTS-1)+x].client_node_id:0;
-
 /*-----------------------------------------------------------*/
 
-int main( int argc, char **argv  )
+int main(int argc, char** argv)
 {
-	uint8_t test = 1;
-	client_requests[2].client_node_id = 2;
-	client_requests[3].client_node_id = 3;
-	client_requests[4].client_node_id = 4;
-	test = CONVERT_NODE_INDEX_TO_NUM(test);
-	test = CONVERT_NODE_INDEX_TO_NUM(0);
-	test = CONVERT_NODE_INDEX_TO_NUM(2);
-	test = CONVERT_NODE_INDEX_TO_NUM(3);
-
-
 	/* Create one of the two tasks. */
 	xTaskCreate(vSomeAnotherTask,		/* Pointer to the function that implements the task. */
-					"Some Task",	/* Text name for the task.  This is to facilitate debugging only. */
-					1000,		/* Stack depth - most small microcontrollers will use much less stack than this. */
-					NULL,		/* We are not using the task parameter. */
-					1,			/* This task will run at priority 1. */
-					NULL );		/* We are not using the task handle. */
+		"Some Task",	/* Text name for the task.  This is to facilitate debugging only. */
+		1000,		/* Stack depth - most small microcontrollers will use much less stack than this. */
+		NULL,		/* We are not using the task parameter. */
+		1,			/* This task will run at priority 1. */
+		NULL);		/* We are not using the task handle. */
 
 	xTaskCreate(HardwareTimerInterruption_Immitate, "Timer Interrupt", 100, NULL, 1, NULL);
 	init_simulatePROCESSOR_MODES(); //!for using cmsis_os funcs
@@ -157,31 +121,31 @@ int main( int argc, char **argv  )
 	vPortSetInterruptHandler(timerINTERRUPT_NUMBER, ulTimerInterruptHandler);
 
 	/* Start the scheduler to start the tasks executing. */
-	vTaskStartScheduler();	
+	vTaskStartScheduler();
 
-	/* The following line should never be reached because vTaskStartScheduler() 
+	/* The following line should never be reached because vTaskStartScheduler()
 	will only return if there was not enough FreeRTOS heap memory available to
 	create the Idle and (if configured) Timer tasks.  Heap management, and
 	techniques for trapping heap exhaustion, are described in the book text. */
-	for( ;; );
+	for (;; );
 	return 0;
 }
 /*-----------------------------------------------------------*/
 
-void vSomeAnotherTask( void *pvParameters )
+void vSomeAnotherTask(void* pvParameters)
 {
-	const char *pcTaskName = "Some another task running!\r\n";
+	const char* pcTaskName = "Some another task running!\r\n";
 	volatile uint32_t ul;
 	static char buffer[200];
 
 	/* As per most tasks, this task is implemented in an infinite loop. */
-	for( ;; )
+	for (;; )
 	{
 		/* Print out the name of this task. */
-		vPrintString( pcTaskName );
+		vPrintString(pcTaskName);
 
 		/* Delay for a period. */
-		vTaskDelay(50); //
+		vTaskDelay(50);
 	}
 }
 /*-----------------------------------------------------------*/
@@ -223,7 +187,7 @@ static uint32_t ulTimerInterruptHandler(void)
 void HardwareTimerInterruption_Immitate(void* pvParameters)
 {
 	for (;;) {
-		vTaskDelay(100);
+		vTaskDelay(10);
 		vPortGenerateSimulatedInterrupt(mainINTERRUPT_NUMBER);
 		vPortGenerateSimulatedInterrupt(timerINTERRUPT_NUMBER);
 	}
