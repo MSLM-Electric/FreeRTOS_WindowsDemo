@@ -80,14 +80,14 @@ void vConfigureTimerForRunTimeStats( void );	/* Prototype of function that initi
 #define portGET_RUN_TIME_COUNTER_VALUE() ulGetRunTimeCounterValue()
 
 /* Co-routine related configuration options. */
-#define configUSE_CO_ROUTINES 					1
+#define configUSE_CO_ROUTINES 					0
 #define configMAX_CO_ROUTINE_PRIORITIES			( 2 )
 
 /* This demo makes use of one or more example stats formatting functions.  These
 format the raw data provided by the uxTaskGetSystemState() function in to human
 readable ASCII form.  See the notes in the implementation of vTaskList() within
 FreeRTOS/Source/tasks.c for limitations. */
-#define configUSE_STATS_FORMATTING_FUNCTIONS	1
+#define configUSE_STATS_FORMATTING_FUNCTIONS	0
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function.  In most cases the linker will remove unused

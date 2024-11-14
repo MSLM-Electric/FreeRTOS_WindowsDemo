@@ -444,7 +444,6 @@ void TransmitInterrupt(void *arg)
 		Port->Status |= PORT_SENDED;
 		Write(Port, NULL, no_required_now);
 	}
-	//StopTimerWP(&Port->SendingTimer);
 	return;
 }
 
@@ -454,7 +453,7 @@ void ReceiveInterrupt(void* arg) //ReceiveInterrupt()
 	if ((Port->Status & (PORT_READY | PORT_RECEIVING)) == ONLY (PORT_READY | PORT_RECEIVING)) {
 		Port->Status |= PORT_RECEIVED;
 		FUNCTION_EXECUTE_PRINT(/*TRACE_RECV_FUNC*/0);
-		Recv(Port, NULL,no_required_now);
+		Recv(Port, NULL, no_required_now);
 	}
 	return;
 }

@@ -2,6 +2,7 @@
 #include <avr/interrupt.h>
 #include <SimpleTimerWP.h>
 #include <HardwareInterfaceUnit.h>
+#include <uart.h>
 
 //Discrete inputs
 #define DI1 4    //1
@@ -41,16 +42,17 @@ ISR(TIMER1_OVF_vect)
 }
 
 // Interrupt on receive
-ISR (USART_RXC_vect)
+ISR (SIG_USART_RECV, ISR_BLOCK)
 {
-  //Serial.println("Recv INT");
-  ReceiveInterrupt(&SlavePort);
+  testVar = 100;
+  //ReceiveInterrupt(&SlavePort);
 }
 
 // Interrupt on Transmit
-ISR (USART_TXC_vect)
+ISR (SIG_USART_TRANS, ISR_BLOCK)
 {
   //Serial.println("Transmit INT");
+  testVar = 200;
   TransmitInterrupt(&SlavePort);
 }
 
@@ -60,7 +62,10 @@ static uint32_t getTickValue()
   return someExternalTick;
 }
 
-void setup() {  
+void setup() {
+  pinMode(0, INPUT);
+  pinMode(1, OUTPUT);
+    
   //configing timer:
   TCCR1A = 0;           // Init Timer1
   TCCR1B = 0;           // Init Timer1
@@ -77,57 +82,52 @@ void setup() {
   
   //UCSR0B |= (1 << RXCIE0) | (1 << TXCIE0); // Enable the USART Receive Complete interrupt (USART_RXC)
   
-  sei(); // Enable the Global Interrupt Enable flag so that interrupts can be processed
+
 
   
   //Serial.begin(9600);
-  pinMode(DI1, INPUT);
-  pinMode(DI2, INPUT);
-  pinMode(DI3, INPUT);
-  pinMode(DI4, INPUT);
-
-  pinMode(DQREL1, OUTPUT);
-  pinMode(DQREL2, OUTPUT);
-
-  pinMode(PWMQ1, OUTPUT);
-  pinMode(PWMQ2, OUTPUT);
-  pinMode(PWMQ3, OUTPUT);
-  pinMode(PWMQ4, OUTPUT);  
-  InitSlavePort(&SlavePort);
-  SlavePort.Status setBITS(PORT_READY);
+  //+InitSlavePort(&SlavePort);
+  //+SlavePort.Status setBITS(PORT_READY);
   InitTimerWP(&Timer1s, NULL);
   LaunchTimerWP(1000, &Timer1s);
   InitTimerWP(&Timer10ms, NULL);
   LaunchTimerWP((U32_ms)10, &Timer10ms); 
   //Serial.println("Begin programm");
+  USART_Init(NULL);
+  USART_ReceiveINTEnable();
+  USART_TransmitINTEnable();
+  sei(); // Enable the Global Interrupt Enable flag so that interrupts can be processed
 }
 
-void loop() {                         
-//  if(IsTimerWPRinging(&Timer1s)){
-//    RestartTimerWP(&Timer1s);
-//    Serial.println(someExternalTick);
-//    //Serial.println(testVar);
-//  }
-  if(IsTimerWPRinging(&Timer10ms)){
-    RestartTimerWP(&Timer10ms);
-    if (NOT (SlavePort.Status & PORT_BUSY)) {
+void loop() {
+  if(IsTimerWPRinging(&Timer1s)){
+    RestartTimerWP(&Timer1s);
+    if(testVar == 100){
       //Serial.begin(9600);
-      //Serial.println(someExternalTick);
-      //Serial.end(); 
-      //InitSlavePort(&SlavePort);
-      memset(SlavePort.BufferRecved, 0, sizeof(SlavePort.BufferRecved));
-      Recv(&SlavePort, buffer, sizeof(buffer));
-    }
-    ReceivingTimerHandle(&SlavePort);
-    if (SlavePort.Status & PORT_RECEIVED_ALL) {
-      //DEBUG_PRINTM(1, SlavePort.BufferRecved);
+      Serial.println("Recv INT");
+      //Serial.end();                         
+      testVar = 0;
+    }else if(testVar == 200){
       //Serial.begin(9600);
-      //Serial.println((char *)SlavePort.BufferRecved);
-      //Serial.println("Recved all section!");
+      Serial.println("Transmit INT");
       //Serial.end();
-      //InitSlavePort(&SlavePort);
-      Write(&SlavePort, "Slave've got your msg!\n", 24);
+      testVar = 0;
     }
+    USART_Transmit('P');
+    //Serial.begin(9600);
+    //Serial.println(testVar);
+    //Serial.end();
+    uint8_t tVar[3];
+    tVar[0] = testVar/100;
+    tVar[1] = (testVar - tVar[0]*100)/10;
+    tVar[2] = testVar - (testVar/10)*10;
+    delay(1);
+    USART_Transmit(tVar[0]+0x30); //254/100 = 2    
+    delay(1);
+    USART_Transmit(tVar[1]+0x30);  //254/10 = 25     254-200 = 54  /10 = 5
+    delay(1);
+    USART_Transmit(tVar[2]+0x30);     //254                          254/10 = 25   25*10 = 250 
+    
   }
   //testVar++;
 }

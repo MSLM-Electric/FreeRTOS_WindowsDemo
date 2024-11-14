@@ -147,10 +147,21 @@ inline char* CUT_FILES_PATH(char* x, int siz) {
                             if(x)\
                                 printf("func executed: %s(): %d\n", __func__, __LINE__); \
                         }while(0)\
-
+/*//?not FreeRTOS debug_print.h instead printf()?*/
 #else
 #define FUNCTION_EXECUTE_PRINT(x)
 #endif // !(FUNCTION_EXECUTE_PRINT_EN )
+
+#define FAILED_EXECUTE_MSG_EN 1
+#if (FAILED_EXECUTE_MSG_EN)
+#define FAILED_EXECUTE_MSG(x) do{\
+                            if(x)\
+                                printf("Failed execute on: %s(): %d\n", __func__, __LINE__); \
+                        }while(0)\
+
+#else
+#define FAILED_EXECUTE_MSG(x)
+#endif // !FAILED_EXECUTE_MSG_EN
 
 #define asm __asm
 

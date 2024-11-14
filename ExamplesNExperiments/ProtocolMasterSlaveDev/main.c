@@ -113,6 +113,8 @@ static uint32_t waitRXingFromSlaveByMaster(void);
 static uint32_t waitTXingToMasterBySlave(void);
 
 #include "SpecLibs/HardwareInterfaceUnit/HardwareInterfaceUnit.h"
+#include "SpecLibs/HardwareInterfaceUnit/port.h"
+
 osPoolDef(mpool, 8, portsBuffer_t);
 extern osPoolId mpool;
 osMessageQDef(MsgBox, 8, portsBuffer_t);
@@ -191,6 +193,30 @@ int main( int argc, char **argv  )
 InterfacePortHandle_t MasterPort;
 InterfacePortHandle_t SlavePort;
 
+// Interrupt on receive
+SLAVE_ISR(USART_RXC_vect)
+{
+	ReceiveInterrupt(&SlavePort);
+}
+
+// Interrupt on Transmit
+SLAVE_ISR(USART_TXC_vect)
+{
+	TransmitInterrupt(&SlavePort);
+}
+
+// Interrupt on receive
+MASTER_ISR(USART_RXC_vect)
+{
+	ReceiveInterrupt(&MasterPort);
+}
+
+// Interrupt on Transmit
+MASTER_ISR(USART_TXC_vect)
+{
+	TransmitInterrupt(&MasterPort);
+}
+  
 void vMasterCoreImmit( void *pvParameters )
 {
 	const char *pcTaskName = "Master unit running!\r\n";
@@ -261,7 +287,7 @@ void vSlaveCoreImmit(void* pvParameters)
 		ReceivingTimerHandle(&SlavePort);
 		if (SlavePort.Status & PORT_RECEIVED_ALL) {
 			DEBUG_PRINTM(1, SlavePort.BufferRecved);
-			Write(&SlavePort, "Slave've got your msg!\n", 24);  //? PortSendSimualtion() calls Access violation
+			Write(&SlavePort, "Slave've got your msg!\n", 24);
 		}
 	}
 }
@@ -283,14 +309,16 @@ static uint32_t waitRXing/*FromMasterBySlave*/(void)
 					//SlaveRXinterruption()
 					osPoolFree(mpool, ifsPort);
 					HWPortN[SLAVENO].BUFFER = ifsPort->BUFFER;
-					ReceiveInterrupt(&SlavePort);
+					//ReceiveInterrupt(&SlavePort);
+					SLAVE_CallISR(USART_RXC_vect);
 					/*I'v got from master then Master transmitted:*/
 					osSignalSet(/*MasterTXinterrupt()*/xMasterTXsignal, 0x0001);
 				}else if (ifsPort->Port == &SlavePort) {
 					//MasterRXinterruption()
 					osPoolFree(mpool, ifsPort);
 					HWPortN[MASTERNO].BUFFER = ifsPort->BUFFER;
-					ReceiveInterrupt(&MasterPort);
+					//ReceiveInterrupt(&MasterPort);
+					MASTER_CallISR(USART_RXC_vect);
 					/*I've got from slave then Slave transmitted*/
 					osSignalSet(/*SlaveTXinterrupt()*/xSlaveTXsignal, 0x0002);
 				}
@@ -309,7 +337,8 @@ static uint32_t waitTXingToSlaveByMaster(void)
 		event = osSignalWait(0x0001, osWaitForever);
 		if (event.status == osEventSignal) {
 			//MasterTXinterruption()
-			TransmitInterrupt(&MasterPort);
+			//TransmitInterrupt(&MasterPort);
+			MASTER_CallISR(USART_TXC_vect);
 			//osDelay(2);
 		}
 		osSignalClear(xMasterTXsignal, 0x0001);
@@ -324,7 +353,8 @@ static uint32_t waitTXingToMasterBySlave(void)
 		event = osSignalWait(0x0002, osWaitForever);
 		if (event.status == osEventSignal) {
 			//SlaveTXinterruption()
-			TransmitInterrupt(&SlavePort);
+			//TransmitInterrupt(&SlavePort);
+			SLAVE_CallISR(USART_TXC_vect);
 			//osDelay(2);
 		}
 		osSignalClear(xSlaveTXsignal, 0x0002);

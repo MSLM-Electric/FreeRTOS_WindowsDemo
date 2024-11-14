@@ -1,0 +1,341 @@
+commit 85a5615e6b01424f41ad37b02241ab5df03d273f
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Oct 28 17:40:29 2024 +0500
+
+    lil
+
+commit 6b76245abaa615852fc72ce8d82c184b25c77ddf
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Oct 25 21:18:06 2024 +0500
+
+    compilable but not launched yet
+
+commit 8d7715e7c0a3f0a64d2271e531d156e388171307
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Oct 25 21:05:24 2024 +0500
+
+    preparing test real hwifsport
+
+commit 1ae3ca68aa371d73f4aec62ff2513f226b06842e
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue Oct 22 13:20:51 2024 +0500
+
+    lil work
+
+commit 664c3734b58969d51bc62731ca4857819e56d17e
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Oct 21 13:57:44 2024 +0500
+
+    cpp files add
+
+commit ba720e7982334fdf702ebd014d46d49f65fb40b5
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Oct 21 13:55:08 2024 +0500
+
+    arduino compatibiling
+
+commit 5bfa0385876a83252d8cf6dc11fbbdc2611baf21
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Oct 18 02:38:07 2024 +0500
+
+    build32 for cmsis_os testing. RX-TX test good
+
+commit d2e05267593911bad161f485ff4a791d54c1ad0f
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sun Oct 13 11:19:15 2024 +0500
+
+    sm worx
+
+commit a72029729a19c832649701fa5b26bd4a322e6d5d
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sat Oct 12 19:21:24 2024 +0500
+
+    Master TXing and Slave RXing good. some cmsis os funcs tested!
+
+commit 6e695ea632bd708f8889e4180b4ef2364e023d1c
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sat Oct 12 16:32:54 2024 +0500
+
+    sm sync
+
+commit 91b8829ffbd49e3365084bd795b2f147a2c54965
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Thu Oct 10 18:51:54 2024 +0500
+
+    master slave baginning jobs
+
+commit a531ffa8794b3aaacaba8219cdfa5eff5942d721
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue Oct 8 17:49:24 2024 +0500
+
+    lil work
+
+commit 9b5efd777fc88767c61fb66a5b558ff49f3b23ca
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Sep 30 10:58:46 2024 +0500
+
+    readme update
+
+commit d4761d12cfd838168e2903d5d5bbcec9664eca47
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sun Sep 29 20:35:15 2024 +0500
+
+    CMSIS OS is compalible!
+
+commit dc164bf37ebecadea2831a3a506e713a8901bb42
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sun Sep 29 20:22:38 2024 +0500
+
+    Succesfull upgrade to FreeRTOS v10.0.1. But CMSIS_OS not compilable
+
+commit 9ecf7856607e66f606d21bc98807c527eb1c070c
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sun Sep 29 18:13:46 2024 +0500
+
+    attempting build
+
+commit c23100b0737701ee5306d307dfe74f20f20e7e26
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sun Sep 29 17:34:21 2024 +0500
+
+    attemting build the updated sources v10
+
+commit 6a554c263e9bb9c532505079a1e65eedbaa8561b
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Sun Sep 29 17:16:30 2024 +0500
+
+    FreeRTOS v10.0.1 files thrown
+
+commit 5d09a2dc175d82d07daa8beebfbc8ad86cd29c1c
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Thu Sep 26 16:31:40 2024 +0500
+
+    1000 Hz
+
+commit e9e43415f16d6fe548f85ab3b2d5960fd6beb40e
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue Sep 24 18:12:04 2024 +0500
+
+    lily
+
+commit 7189bac725df1db44b49b22443b38e9757dcf136
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue Sep 24 18:04:10 2024 +0500
+
+    additn
+
+commit 220a84e5f696fe9685ef52bb853bd12368fbf57b
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue Sep 24 18:02:51 2024 +0500
+
+    fixshon
+
+commit 15ec6c76cc843862b741c853171450477bf137e3
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Thu Aug 15 18:11:33 2024 +0500
+
+    array of tasks tests added, simpletimer lib update
+
+commit 633e7d6f074540ff8eddd2b2670a1078abd3f9e2
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Thu Aug 15 15:42:06 2024 +0500
+
+    array of tasks fixed
+
+commit 1abe53cc11b84805115786a5224c4b42e2a54ac7
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue Aug 13 16:08:00 2024 +0500
+
+    attempting update freertos to v10
+
+commit 70d4524d7c751856d582e62b2e7308f8b72d24f1
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 18:19:32 2024 +0500
+
+    notes
+
+commit d5dfdffe71cac81573fbd477755e16467dc73c45
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 18:17:19 2024 +0500
+
+    notes
+
+commit e16b16caba5e2ad6c46e196b0a6e7f645dd4607a
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 18:15:57 2024 +0500
+
+    notes
+
+commit 0bfb779383bc1588eada976b8fbe3791fd8cf49b
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 18:12:26 2024 +0500
+
+    notes
+
+commit 5a832abaadb81ded7c7a67572b41f2778b9cdb85
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 18:11:33 2024 +0500
+
+    notes
+
+commit 1418c18fbbcfc0b2bdfabcf57cc2ecaabe6396fa
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 18:09:45 2024 +0500
+
+    notes
+
+commit 0b07e454709ee826770587092db8b70290a63750
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 12 14:21:37 2024 +0500
+
+    lil add
+
+commit 826c06352184fab3721f933ae22961b5ce4bc661
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 21:03:40 2024 +0500
+
+    fix
+
+commit 8f127737bd33f594a91b381c52ed236ec0845c90
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:51:02 2024 +0500
+
+    fix
+
+commit 937b06fd914ff5e17d098cd9d0ace0420f02c851
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:49:37 2024 +0500
+
+    fix
+
+commit 5b4026526bab80b03c38ce6be5f7ab7d01be0d6d
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:48:51 2024 +0500
+
+    fix
+
+commit dd30aec549ce13135ef50fce5c6fcd1795d56c79
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:46:36 2024 +0500
+
+    fix
+
+commit a66cf7bc16c31b9eedc826fe18918d3b5e9f9401
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:44:24 2024 +0500
+
+    fix
+
+commit ed7bddf3ed17909a0d02dcdc7ac58de798c05f99
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:39:08 2024 +0500
+
+    fix
+
+commit cf35d37908384591450cd4f66917b581d0da7d67
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:37:32 2024 +0500
+
+    lil fixshon
+
+commit 2530cc71ff2d4c519428b25aeafdd999c29a76b4
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Aug 9 20:34:59 2024 +0500
+
+    BasicTemplate added
+
+commit 0c47a55fe9903b4bb7e2b0ddfc81f82831e09663
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Mon Aug 5 21:18:16 2024 +0500
+
+    less update
+
+commit f49bb20c544536cecf18db22c161bd1871ca0680
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri Jun 7 12:18:50 2024 +0500
+
+    more clarif.
+
+commit ea53f3a3b9116dc6e41e97d0e7acf606e7af5cff
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed Jun 5 13:45:53 2024 +0500
+
+    Processors modes simulate
+
+commit bab16337235014a7e02e1e81b8f2e9f6e456a884
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 29 17:52:55 2024 +0500
+
+    Note 3
+
+commit 71998ac709a45968d2c1d792cc3f01b901012ffd
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 29 17:46:31 2024 +0500
+
+    inHandlerMode() Note 2
+
+commit cdb1051ebfedb1972d2b999c7f72eb1930f619bd
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri May 24 13:34:11 2024 +0500
+
+    Separate FreeRTOSConfig.h file each project
+
+commit fc197d603a6905890951dcd4d3a982ee533bb2cb
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri May 24 13:31:56 2024 +0500
+
+    Separate FreeRTOSConfig.h file each project
+
+commit 29ca632d80728cdbeba5dd8a6f156073bcddd625
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri May 24 12:44:59 2024 +0500
+
+    inHandlerMode() Note
+
+commit b4b2e081eb13e01f48dad9992624c4cb7ddef518
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Fri May 24 12:27:06 2024 +0500
+
+    inHandlerMode() Note
+
+commit ab57ccd4312907baa412ea2ebdfbfabe4a15a004
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 22 19:10:36 2024 +0500
+
+    fx
+
+commit 68e211ea28d2d25f1ca00bbe6f4e447f60236d50
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 22 18:35:29 2024 +0500
+
+    rm
+
+commit 959a71731370660cd4da2466037366d1aa6ea8cb
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 22 18:32:09 2024 +0500
+
+    cmsis_os disabler
+
+commit 2bf864fd1a5392a95bf34418f38646d6f84ac0d4
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 22 14:30:50 2024 +0500
+
+    cmsis_os portable by user/cmake project
+
+commit 52b4e0309efc0b2b47e71bc75132100276619666
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Wed May 22 11:39:11 2024 +0500
+
+    Compiled
+
+commit 21e2ea9ee6a3ecb5dec1c10061004d1a3e747c6d
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue May 21 21:20:00 2024 +0500
+
+    two
+
+commit 4aeac9bec35d02e7ef5fe0c6076544050f5e7d1c
+Author: Osim A <g-unit_osim@mail.ru>
+Date:   Tue May 21 20:58:34 2024 +0500
+
+    Yakum
