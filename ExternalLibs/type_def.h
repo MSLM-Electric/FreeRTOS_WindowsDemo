@@ -185,6 +185,7 @@ inline char* CUT_FILES_PATH(char* x, int siz) {
 
 #if defined __MINGW32__
 #define MCU_PACK __attribute__((packed, gcc_struct))
+#define END_MCU_PACK
 #elif defined DEBUG_ON_VS
 #define STRINGIFY(a) #a
 #define PRAGMA _Pragma
@@ -195,7 +196,7 @@ inline char* CUT_FILES_PATH(char* x, int siz) {
 #endif
 
 //#define MCU_NAKED __attribute__((naked))
-//#define MCU_ALIGN(x) __attribute__((aligned (x)))
+#define MCU_ALIGN(x) __attribute__((aligned (x)))
 //#define MCU_ALWAYS_INLINE __attribute__((always_inline))
 //#define MCU_NEVER_INLINE __attribute__((noinline))
 //#define FNCT_NO_RETURN __attribute__((noreturn))

@@ -45,6 +45,8 @@ set(SOURCES
     ${SIMPLETIMER}/SimpleTimerWP.c
     ${HARDWAREINTERFACE_UNIT}/HardwareInterfaceUnit.c
     ${ROOT_PATH}/main.c
+
+    ${ROOT_PATH}/MicrochipPIC_Platform/portXC8.c
 )
 
 set(HEADERS
