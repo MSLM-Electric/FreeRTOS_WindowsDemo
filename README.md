@@ -52,9 +52,4 @@ Buildable and worky projects:
 ```
 
 
-In progress:
-```
-6. ProtocolMasterSlaveDev
-```
-
 <sup>**_Note:_** For using cmsis_os functions on ISR section to simulate use **_simulatePROCESSOR_HANDLER_MODE()_** function inside. Then before returning/exiting from ISR section execute **_simulatePROCESSOR_THREAD_MODE()_**. And don't forget use `init_simulatePROCESSOR_MODES()` before launching the `vTaskStartScheduler()` on main code.</sup><br />

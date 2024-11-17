@@ -13,6 +13,7 @@ ExamplesNExperiments/packet_task_test
 ExamplesNExperiments/Lwip_memhandling
 ExamplesNExperiments/sntp_tests
 ExamplesNExperiments/Manch
+ExamplesNExperiments/ProtocolDev
 !*.c
 !*.cpp
 !*.h
