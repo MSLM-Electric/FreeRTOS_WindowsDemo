@@ -55,8 +55,9 @@ Buildable and worky projects:
 <sup>**_Note:_** For using cmsis_os functions on ISR section to simulate use **_simulatePROCESSOR_HANDLER_MODE()_** function inside. Then before returning/exiting from ISR section execute **_simulatePROCESSOR_THREAD_MODE()_**. And don't forget use `init_simulatePROCESSOR_MODES()` before launching the `vTaskStartScheduler()` on main code.</sup><br />
 
 **And again one last Note!**
+Unfortunately there is some limit in simulation of queue processes.
 For properly using osMessage()/osPool()/osMail() and s.o. features the max length of structure for putting to it's input queue should be 8 bytes or less.
-If structure variable putted to the queue is more 8bytes, then simulation crashes!
+If structure variable put to the queue is more 8bytes, then simulation crashes!
 Good example:
 ```cpp
 typedef struct {
