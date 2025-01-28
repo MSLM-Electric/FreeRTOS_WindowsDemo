@@ -35,7 +35,7 @@ cd ..
 - After successfully built project go to **_/build32_** folder and open the  **"MyProjectForExample.sln"** file.
 - After opening it on VS (*not ~~VS Code!~~*) set the main project ("_MyProjectForExample_") as startup project. To do it open **_Solution Explorer_** window on VS and
 chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExample_ in list. Now you can launch the VS debug.<br />
-<sup>**_Note:_** _Unfortunatly I've found some buggy feature on VS 2019 Debug Launch. It doesn't shows the consoles processes/writings after Debug started so to avoid it just do a few restarts while debugging._</sup><br />
+<sup>**_Note:_** _Unfortunatly I've found some buggy feature on VS 2019 Debug Launch. It doesn't shows the consoles processes/writings after Debug started so to avoid it just do a few restarts while debugging. In high performance PC/CPU & big RAM this bug not occure!_</sup><br />
 <sup>**_Note:_** _CMSIS OS functions simulations testing in progress. Many functions works good. See the `BasicTemplate/README.md` file._ </sup><br />
 
 
@@ -53,3 +53,39 @@ Buildable and worky projects:
 
 
 <sup>**_Note:_** For using cmsis_os functions on ISR section to simulate use **_simulatePROCESSOR_HANDLER_MODE()_** function inside. Then before returning/exiting from ISR section execute **_simulatePROCESSOR_THREAD_MODE()_**. And don't forget use `init_simulatePROCESSOR_MODES()` before launching the `vTaskStartScheduler()` on main code.</sup><br />
+
+**And again one last Note!**
+For properly using osMessage()/osPool()/osMail() and s.o. features the max length of structure for putting to it's input queue should be 8 bytes or less.
+If structure variable putted to the queue is more 8bytes, then simulation crashes!
+Good example:
+```cpp
+typedef struct {
+	uint8_t BUFFER; //1..4bytes for 32bit platform
+	InterfacePortHandle_t* Port; //4bytes for 32bit platform
+}portsBuffer_t;
+
+//..
+
+portsBuffer_t* ifsPtr;
+ifsPtr = osPoolAlloc(mpool);
+ifsPtr->Port = PortHandle;
+ifsPtr->BUFFER = BUFFER;
+osMessagePut(MsgBox, (uint32_t)ifsPtr, 10);
+```
+Bad example:
+```cpp
+typedef struct { // Message object structure
+	uint32_t/*float and*//*uint32_t gets error*/    voltage;  
+	uint32_t/*float*/    current;                         
+	uint32_t      counter;                              
+}T_MEAS;  //the length of structure is more 8 bytes!
+
+//..
+
+T_MEAS* mptr;
+mptr = osPoolAlloc(mpool);
+mptr->voltage = 227;
+mptr->current = 12;
+mptr->counter = 170823;
+osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever); 
+```
