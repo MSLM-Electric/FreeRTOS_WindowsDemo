@@ -13,7 +13,9 @@ ExamplesNExperiments/packet_task_test
 ExamplesNExperiments/Lwip_memhandling
 ExamplesNExperiments/sntp_tests
 ExamplesNExperiments/Manch
-ExamplesNExperiments/ProtocolDev
+ExamplesNExperiments/Memory
+ProtocolDev
+Tiny-HardwareInterface
 !*.c
 !*.cpp
 !*.h
@@ -23,6 +25,8 @@ ExamplesNExperiments/ProtocolDev
 !*.txt
 !*.md
 !*.cmake
+!*.new
+!*.old
 !Debug/*.exe
 !Release/*.exe
 f

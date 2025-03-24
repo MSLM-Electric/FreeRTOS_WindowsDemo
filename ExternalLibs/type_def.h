@@ -189,7 +189,12 @@ inline char* CUT_FILES_PATH(char* x, int siz) {
 #elif defined DEBUG_ON_VS
 #define STRINGIFY(a) #a
 #define PRAGMA _Pragma
+#define MCU_PACK_DISABLE 1
+#if MCU_PACK_DISABLE==0
 #define MCU_PACK PRAGMA(STRINGIFY(pack(push, 4)))
+#else
+#define MCU_PACK
+#endif // !MCU_PACK_DISABLE
 #define END_MCU_PACK PRAGMA(STRINGIFY(pack(pop)))
 #else
 #define MCU_PACK __attribute__((packed))
