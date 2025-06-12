@@ -32,10 +32,11 @@ cd build32
 cmake -G "Visual Studio 15 2017" ..
 cd ..
 ```
+- If the entered command *cmake -G "Visual Studio 15 2017" ..* has fault then setup to your PC the Visual Studio Build Tools 2017 (*Visual C++ Build Tools* option in setup menu) and try again. Required space for *Build Tools* is ~4GB. Link for installer: *https://aka.ms/vs/15/release/vs_buildtools.exe*
 - After successfully built project go to **_/build32_** folder and open the  **"MyProjectForExample.sln"** file.
 - After opening it on VS (*not ~~VS Code!~~*) set the main project ("_MyProjectForExample_") as startup project. To do it open **_Solution Explorer_** window on VS and
 chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExample_ in list. Now you can launch the VS debug.<br />
-<sup>**_Note:_** _Unfortunatly I've found some buggy feature on VS 2019 Debug Launch. It doesn't shows the consoles processes/writings after Debug started so to avoid it just do a few restarts while debugging. In high performance PC/CPU & big RAM this bug not occure!_</sup><br />
+<sup>**_Note:_** _Unfortunatly I've found some buggy feature on VS 2019 Debug Launch. It doesn't shows the consoles processes/writings after Debug started so to avoid it just do a few restarts while debugging. In high performanced PC/CPU & big RAM this bug not occure!_</sup><br />
 <sup>**_Note:_** _CMSIS OS functions simulations testing in progress. Many functions works good. See the `BasicTemplate/README.md` file._ </sup><br />
 
 
@@ -76,9 +77,9 @@ osMessagePut(MsgBox, (uint32_t)ifsPtr, 10);
 Bad example:
 ```cpp
 typedef struct { // Message object structure
-	uint32_t/*float and*//*uint32_t gets error*/    voltage;  
-	uint32_t/*float*/    current;                         
-	uint32_t      counter;                              
+	uint32_t/*float and*//*uint32_t gets error*/    voltage;
+	uint32_t/*float*/    current;
+	uint32_t      counter;
 }T_MEAS;  //the length of structure is more 8 bytes!
 
 //..
@@ -88,5 +89,5 @@ mptr = osPoolAlloc(mpool);
 mptr->voltage = 227;
 mptr->current = 12;
 mptr->counter = 170823;
-osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever); 
+osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever);
 ```
