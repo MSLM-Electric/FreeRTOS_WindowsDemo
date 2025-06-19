@@ -32,7 +32,7 @@ cd build32
 cmake -G "Visual Studio 15 2017" ..
 cd ..
 ```
-- If the entered command *cmake -G "Visual Studio 15 2017" ..* has fault then setup to your PC the Visual Studio Build Tools 2017 (*Visual C++ Build Tools* option in setup menu) and try again. Required space for *Build Tools* is ~4GB. Link for installer: *https://aka.ms/vs/15/release/vs_buildtools.exe*
+- If the entered command *cmake -G "Visual Studio 15 2017" ..* has fault then setup to your PC the Visual Studio Build Tools 2017 (*Visual C++ Build Tools* option in the installer setup menu) and try again. Required space for *Build Tools* is ~4GB. Link for installer: *https://aka.ms/vs/15/release/vs_buildtools.exe*
 - After successfully built project go to **_/build32_** folder and open the  **"MyProjectForExample.sln"** file.
 - After opening it on VS (*not ~~VS Code!~~*) set the main project ("_MyProjectForExample_") as startup project. To do it open **_Solution Explorer_** window on VS and
 chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExample_ in list. Now you can launch the VS debug.<br />
@@ -62,8 +62,8 @@ If structure variable put to the queue is more 8bytes, then simulation crashes!
 Good example:
 ```cpp
 typedef struct {
-	uint8_t BUFFER; //1..4bytes for 32bit platform
-	InterfacePortHandle_t* Port; //4bytes for 32bit platform
+	uint8_t                   BUFFER; //1..4bytes for 32bit platform
+	InterfacePortHandle_t*    Port; //4bytes for 32bit platform
 }portsBuffer_t;
 
 //..
@@ -77,8 +77,8 @@ osMessagePut(MsgBox, (uint32_t)ifsPtr, 10);
 Bad example:
 ```cpp
 typedef struct { // Message object structure
-	uint32_t/*float and*//*uint32_t gets error*/    voltage;
-	uint32_t/*float*/    current;
+	uint32_t      voltage;
+	uint32_t      current;
 	uint32_t      counter;
 }T_MEAS;  //the length of structure is more 8 bytes!
 
@@ -91,3 +91,5 @@ mptr->current = 12;
 mptr->counter = 170823;
 osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever);
 ```
+
+<sup>**_TODO:_** Update the SimpleTimer lib to the latest version!</sup><br />
