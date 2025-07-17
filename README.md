@@ -44,12 +44,12 @@ chose **_Set as Startup Project_** by clicking right mouse on _MyProjectForExamp
 Buildable and worky projects:
 ```
 1. BasicTemplate
-2. RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList (not brought into compatibiling with 32-bit platform! Soon)
-3. TasksArrayTests (not 32-bit buildable. Soon)
-4. TimerID_using (not 32-bit buildable)
+2. RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
+3. TasksArrayTests (not 32-bit buildable. Soon) <--
+4. TimerID_using (not 32-bit buildable) <--
 5. TemplateFreeRTOSv10test  (upgraded to FreeRTOS v10.0.1 and compiled.
               Instructions for build and cmsis_os files not brought into
-              compatibiling with 32-bit platform! Soon)
+              compatibiling with 32-bit platform! Soon) <--
 ```
 
 

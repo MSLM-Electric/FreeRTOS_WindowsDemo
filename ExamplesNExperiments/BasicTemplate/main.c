@@ -90,8 +90,8 @@ static U32_ms osKernelSysTick(void);
 
 
 static /*or extern*/ BitLoggerList_t BugsBitList;
-static Timerwp_t BugScannerTimer;
-static Timerwp_t BugBitReportTimer;
+static Timert_t BugScannerTimer;
+static Timert_t BugBitReportTimer;
 static u16 BitPos(u16 Bit);
 
 /* The service routine for the (simulated) interrupt.  This is the interrupt
