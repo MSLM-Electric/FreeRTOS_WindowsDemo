@@ -3,11 +3,10 @@
 
 FreeRTOS Windows Port
 ```
-It is for simulating on Visual Studio to experiment, learning FreeRTOS & immitate some MCU developement processes.
+It is for simulating on Visual Studio to experiment, learning FreeRTOS & immitate some MCU development processes.
 ```
 Buildable CMakeLists.txt template project located on:<br />
 - here [**BasicTemplate project**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate)<br />
-- ~~and another example [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)~~
 
 How To:
 -------
