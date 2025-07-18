@@ -54,9 +54,9 @@
 */
 
 /* FreeRTOS.org includes. */
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/FreeRTOS.h"
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/task.h"
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/timers.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/FreeRTOS.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/task.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/timers.h"
 
 /* Demo includes. */
 #include "../../Win32-simulator-MSVC/Supporting_Functions/supporting_functions.h"

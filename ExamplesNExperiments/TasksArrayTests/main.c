@@ -54,14 +54,14 @@
 */
 
 /* FreeRTOS.org includes. */
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/FreeRTOS.h"
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/task.h"
-#include "../../Win32-simulator-MSVC/FreeRTOS_Source/include/timers.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/FreeRTOS.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/task.h"
+#include "../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/timers.h"
 
 /* Demo includes. */
 #include "../../Win32-simulator-MSVC/Supporting_Functions/supporting_functions.h"
 
-#include "../../ExternalLibs/cmsis_os/cmsis_os.h"
+#include "../../ExternalLibs/cmsis_os_for_testing/cmsis_os.h"
 #include "../../ExternalLibs/BitLogger/BitLogger.h"
 #include "../../ExternalLibs/SimpleTimer/SimpleTimerWP.h"
 #include "../../ExternalLibs/type_def.h"

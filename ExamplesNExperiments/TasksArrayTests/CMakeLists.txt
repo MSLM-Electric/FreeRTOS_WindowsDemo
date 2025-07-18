@@ -4,12 +4,14 @@ set(PROJ_NAME TasksArrayTests)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+add_definitions(-DFREERTOS_V10)
+
 set(ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 message("Start building project...")
 
 set(BACK_FROM_ROOT "../..")
-set(FREERTOS_SRCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/FreeRTOS_Source")
+set(FREERTOS_SRCS "${ROOT_PATH}/${BACK_FROM_ROOT}/Win32-simulator-MSVC/FreeRTOSv10_Source")
 set(FREERTOS_EXPERIMENTS "${ROOT_PATH}/${BACK_FROM_ROOT}/")
 
 include(${FREERTOS_EXPERIMENTS}/Configs.cmake)
@@ -34,6 +36,8 @@ set(SOURCES
     ${FREERTOS_SRCS}/tasks.c
     ${FREERTOS_SRCS}/timers.c
 
+    ${FREERTOS_SRCS}/croutine.c
+    
     ${FREERTOS_PORTABLE}/MemMang/heap_4.c
     ${FREERTOS_PORTABLE}/MSVC-MingW/port.c
     ${FREERTOS_SUPPORT_FUNCS}/supporting_functions.c
@@ -54,7 +58,8 @@ set(HEADERS
     ${FREERTOS_INC}/projdefs.h
     ${FREERTOS_INC}/queue.h
     ${FREERTOS_INC}/semphr.h
-    ${FREERTOS_INC}/StackMacros.h
+    #${FREERTOS_INC}/StackMacros.h #v8.2.3
+    ${FREERTOS_INC}/stack_macros.h
     ${FREERTOS_INC}/task.h
     ${FREERTOS_INC}/timers.h
 

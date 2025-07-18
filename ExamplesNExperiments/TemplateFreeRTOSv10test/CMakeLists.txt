@@ -24,7 +24,7 @@ set(BITLOGGER ${EXTERNAL_LIBS}/BitLogger)
 set(SIMPLETIMER ${EXTERNAL_LIBS}/SimpleTimer)
 #set(CMSIS_OS_ENABLE_FLAG FALSE) #disable this flag if you don't want use cmsis on current project
 if(CMSIS_OS_ENABLE_FLAG)
-    set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os)
+    set(CMSIS_OS ${EXTERNAL_LIBS}/cmsis_os_for_testing)
 endif()
 
 

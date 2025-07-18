@@ -3,13 +3,11 @@
 
 FreeRTOS Windows Port
 ```
-It is for simulating on Visual Studio.
+It is for simulating on Visual Studio to experiment, learning FreeRTOS & immitate some MCU developement processes.
 ```
-Buildable CMakeLists.txt located on:<br />
+Buildable CMakeLists.txt template project located on:<br />
 - here [**BasicTemplate project**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate)<br />
-- ~~and another example [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)~~ (should be upgrade to FreeRTOS v10.0.1 and change the build instructions to 32-bit platform)
-
-Also you can use the updated sources of **FreeRTOS v10.0.1** as template by example on [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/TemplateFreeRTOSv10test)
+- ~~and another example [**here**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList)~~
 
 How To:
 -------
@@ -45,11 +43,11 @@ Buildable and worky projects:
 ```
 1. BasicTemplate
 2. RTOSdebuggingTips-Tricks/FindingBugWithBitLoggerList
-3. TasksArrayTests (not 32-bit buildable. Soon) <--
-4. TimerID_using (not 32-bit buildable) <--
-5. TemplateFreeRTOSv10test  (upgraded to FreeRTOS v10.0.1 and compiled.
-              Instructions for build and cmsis_os files not brought into
-              compatibiling with 32-bit platform! Soon) <--
+3. TasksArrayTests
+4. TimerID_using
+5. TemplateFreeRTOSv10test
+              (cmsis_os tesitngs into
+              compatibiling with 32-bit platform in progress!) <--
 ```
 
 
@@ -91,5 +89,3 @@ mptr->current = 12;
 mptr->counter = 170823;
 osMessagePut(MsgBox, (uint32_t)mptr, osWaitForever);
 ```
-
-<sup>**_TODO:_** Update the SimpleTimer lib to the latest version!</sup><br />
