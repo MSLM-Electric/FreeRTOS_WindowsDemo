@@ -54,6 +54,7 @@
 */
 
 #define _CRT_SECURE_NO_WARNINGS
+//#define _ALLOW_RTCc_IN_STL  //?//!
 
 /* FreeRTOS.org includes. */
 #include "../../../Win32-simulator-MSVC/FreeRTOSv10_Source/include/FreeRTOS.h"
