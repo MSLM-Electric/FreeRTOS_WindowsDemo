@@ -181,6 +181,39 @@ void vPrintTwoStrings( const char *pcString1, const char *pcString2 )
 }
 /*-----------------------------------------------------------*/
 
+#define MAX_POSSIBLE_LEN 200
+int vPrintfRTOS( /*int maxPossibleLen,*/ const char* argv_fmt, ... )
+{
+	int res = 0;
+	vTaskSuspendAll();
+	{
+		char buffer[MAX_POSSIBLE_LEN] = { 0 };
+		//memset(buffer, 0, MAX_POSSIBLE_LEN);
+		//printf_s();
+		buffer[MAX_POSSIBLE_LEN - 1] = 0;
+		va_list argslist;
+		va_start(argslist, argv_fmt);
+		vsprintf(buffer, argv_fmt, argslist);
+		va_end(argslist);
+		if (buffer[MAX_POSSIBLE_LEN - 1] == '\0')
+			printf(buffer);
+		else
+			res = -1;
+	}
+	xTaskResumeAll();
+
+	/* Allow any key to stop the application running. */
+	if (xKeyPressesStopApplication == pdTRUE)
+	{
+		if (_kbhit())
+		{
+			vTaskEndScheduler();
+		}
+	}
+	return res;
+}
+/*-----------------------------------------------------------*/
+
 void vApplicationMallocFailedHook( void )
 {
 	/* vApplicationMallocFailedHook() will only be called if

@@ -69,6 +69,7 @@
 void vPrintString( const char *pcString );
 void vPrintStringAndNumber( const char *pcString, uint32_t ulValue );
 void vPrintTwoStrings( const char *pcString1, const char *pcString2 );
+int vPrintfRTOS( const char* argv_fmt, ... );
 
 #endif
 

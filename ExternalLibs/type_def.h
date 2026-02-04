@@ -93,6 +93,7 @@ typedef u32 u32_t;
 
 #ifndef DEBUG_PRINTF
 #ifndef DISABLE_LOGS
+#if RTOS_SUPPORT_PRINTF==0
 #define DEBUG_PRINTF(enable, message) do{\
                                      if(enable)\
                                         printf message;\
@@ -102,6 +103,16 @@ typedef u32 u32_t;
                                      if(enable)\
                                         printf_s message;\
                                     }while(0)\
+
+#else
+#include "../Win32-simulator-MSVC/Supporting_Functions/supporting_functions.h"
+#define DEBUG_PRINTF(enable, message) do{\
+                                     if(enable)\
+                                        vPrintfRTOS message;\
+                                    }while(0)\
+
+#define DEBUG_PRINTFS(enable, message)
+#endif // !RTOS_SUPPORT_PRINTF
 
 #else
 #define DEBUG_PRINTF(enable, message)
@@ -211,5 +222,9 @@ debug_printf()
 #define debug_assert(message, assertion) if(NOT (assertion))\
 	{debug_printf("%s failed in %s:%d", message, __FILE__, __LINE__);}
 */
+
+#ifndef DEBUG_ASSERT
+#define DEBUG_ASSERT(message, assertion, logic)
+#endif // !DEBUG_ASSERT
 
 #endif// TYPE_DEF_H

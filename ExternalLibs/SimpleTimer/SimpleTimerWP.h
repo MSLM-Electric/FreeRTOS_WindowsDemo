@@ -120,6 +120,7 @@ uint8_t IsTimerWPRinging(Timert_t* Timer);
 uint8_t IsTimerRingingKnowByRef(SimpleTimer_t *Timer, TimerBaseType asRef);
 uint8_t RestartTimerWP(Timert_t* Timer);
 uint8_t RestartTimerGroup(Timert_t* ArrTimers, uint8_t qntyTimers);
+uint8_t RestartTimerByRef(SimpleTimer_t* Timer, TimerBaseType asRef);
 void catchBreakPoint(TimerBaseType *var); //Click to set breakpoint there where it called when debugging
 #if defined(USE_REGISTERING_TIMERS_WITH_CALLBACK) && !defined(MINIMAL_CODESIZE)
 uint8_t RegisterTimerCallback(Timert_t* Timer, timerwpcallback_fn* ThisTimerCallback, timerType_enum timType, tickptr_fn* SpecifyTickFunc);  //RegisterTimerWithCallbackToList() sounds better
