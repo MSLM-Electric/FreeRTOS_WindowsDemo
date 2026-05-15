@@ -5,7 +5,7 @@ FreeRTOS Windows Port
 
 Short description:
 ------------------
-The main goal of this repo is implement yourself separate example/project in where all modules of FreeRTOS and if you desired the CMSIS-RTOS immitation already included.
+The main goal of this repo is to help implement yourself separate example/project in where all modules of FreeRTOS and if you desired the CMSIS-RTOS immitation already included.
 All your created projects uses one basic files & libs.
 
 Buildable CMakeLists.txt template project located on:<br />
