@@ -15,6 +15,7 @@ ExamplesNExperiments/sntp_tests
 ExamplesNExperiments/Manch
 ExamplesNExperiments/Memory
 ExamplesNExperiments/ShiftRegs
+ExamplesNExperiments/FreeRTOS-Debug-master
 ringbuff_test
 ProtocolDev
 Tiny-HardwareInterface

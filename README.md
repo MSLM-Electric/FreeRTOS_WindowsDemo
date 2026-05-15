@@ -1,10 +1,13 @@
-
-
-
 FreeRTOS Windows Port
-```
-It is for simulating on Visual Studio to experiment, learning FreeRTOS & immitate some MCU development processes.
-```
+=====================
+
+*It is for simulating on Visual Studio to experiment, learning FreeRTOS & immitate some MCU development processes.*
+
+Short description:
+------------------
+The main goal of this repo is implement yourself separate example/project in where all modules of FreeRTOS and if you desired the CMSIS-RTOS immitation already included.
+All your created projects uses one basic files & libs.
+
 Buildable CMakeLists.txt template project located on:<br />
 - here [**BasicTemplate project**](https://github.com/MSLM-Electric/FreeRTOS_WindowsDemo/tree/master/ExamplesNExperiments/BasicTemplate)<br />
 

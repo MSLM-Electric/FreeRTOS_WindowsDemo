@@ -139,10 +139,6 @@ int main(int argc, char** argv)
 	MutexP = osMutexCreate(osMutex(MutexP));
 	osMutexRelease(MutexP);
 
-	//osThreadDef(send, send_thread, osPriorityNormal, 1, 400);
-	//osThreadDef(recv, recv_thread, osPriorityNormal, 1, 2000);
-	//tid_thread1 = osThreadCreate(osThread(send), NULL);
-	//tid_thread2 = osThreadCreate(osThread(recv), NULL);
 	xTaskCreate(send_thread, "snd", 2000, NULL, 1, NULL);
 	xTaskCreate(recv_thread, "rcv", 2000, NULL, 1, NULL);
 
@@ -168,7 +164,6 @@ static void send_thread(void const* argument) {
 		osMutexWait(MutexP, portMAX_DELAY);
 		mptr = osPoolAlloc(mpool);                     // Allocate memory for the message
 		osMutexRelease(MutexP);
-		//*mptr = 550;
 		mptr->voltage = 223;// .72;                        // Set the message content
 		mptr->current = 17;// .54;
 		mptr->counter = 120786;
@@ -178,7 +173,6 @@ static void send_thread(void const* argument) {
 		osMutexWait(MutexP, portMAX_DELAY);
 		mptr = osPoolAlloc(mpool);                     // Allocate memory for the message
 		osMutexRelease(MutexP);
-		//*mptr = 33;
 		mptr->voltage = 227;// .23;                        // Prepare a 2nd message
 		mptr->current = 12;// .41;
 		mptr->counter = 170823;
@@ -194,6 +188,7 @@ static void send_thread(void const* argument) {
 static void recv_thread(void const* argument) {
 	T_MEAS* rptr;
 	osEvent  evt;
+	osStatus mutxstate = osOK;
 
 	for (;;) {
 		evt = osMessageGet(MsgBox, 100);  // wait for message
@@ -207,9 +202,14 @@ static void recv_thread(void const* argument) {
 			printf("Number of cycles: %d\n", rptr->counter);
 			//DEBUG_PRINTMNUM(1, "ptr is ", evt.value.v);
 			//DEBUG_PRINTMNUM(1, "val is ", *((uint32_t*)evt.value.v));
-			osMutexWait(MutexP, osWaitForever);
-			osPoolFree(mpool, rptr);                  // free memory allocated for message
-			osMutexRelease(MutexP);
+			mutxstate = osMutexWait(MutexP, osWaitForever);
+			if (mutxstate == osOK) {
+				osPoolFree(mpool, rptr);                  // free memory allocated for message
+				osMutexRelease(MutexP);
+			}
+			else {
+				printf("Mutex state: %d", mutxstate);
+			}
 		}
 	}
 }
